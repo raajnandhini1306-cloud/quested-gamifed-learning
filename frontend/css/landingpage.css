@@ -7,7 +7,7 @@
 }
 
 body {
-    background-image: url('bg.jpg');
+    background-image: url('../assets/bg.jpg');
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
@@ -18,7 +18,7 @@ body {
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    font-family: 'Macondo', cursive;
     color: white;
     overflow-x: hidden;
 }
@@ -64,6 +64,7 @@ h1 {
             #BF953F 100%);
     background-size: 200% auto;
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
     animation: shimmer 3s linear infinite;
 
@@ -98,7 +99,8 @@ h2 {
     flex-wrap: wrap;
 }
 
-button {
+.btn {
+    display: inline-block;
     padding: 16px 36px;
     font-size: 1rem;
     font-weight: 700;
@@ -108,6 +110,9 @@ button {
     border-radius: 12px;
     transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     margin-bottom: 20px;
+    text-decoration: none;
+    text-align: center;
+    font-family: 'Macondo', cursive;
 }
 
 #login-btn {
@@ -135,7 +140,7 @@ button {
     transform: translateY(-2px);
 }
 
-button:active {
+.btn:active {
     transform: translateY(0);
 }
 

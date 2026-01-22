@@ -60,7 +60,7 @@ h1 {
     position: relative;
     width: 100vw;
     height: 100vh;
-    background-image: url('village-map.png');
+    background-image: url('../assets/village-map.png');
     background-size: cover;
     background-position: center;
 }
@@ -123,8 +123,16 @@ h1 {
     border: none;
     color: #f4e4bc;
     font-family: 'Macondo', cursive;
-    font-size: 1rem;
+    font-size: 1.1rem;
     cursor: pointer;
+    padding: 6px 14px;
+    border-radius: 20px;
+    transition: all 0.2s;
+}
+
+.nav-btn:hover {
+    background: rgba(241, 196, 15, 0.2);
+    transform: translateY(-2px);
 }
 
 .nav-btn.active {

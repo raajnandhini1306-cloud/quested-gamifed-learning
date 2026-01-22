@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Macondo&display=swap');
 
 body {
-    background-image: url(bg3.jpg);
+    background-image: url('../assets/bg3.jpg');
     background-size: cover;
     display: flex;
     justify-content: center;

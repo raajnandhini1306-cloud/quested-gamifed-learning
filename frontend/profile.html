@@ -3,28 +3,74 @@
 
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description"
+        content="View your QuestEd profile, track your progress, badges, and stats as you master new skills.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <title>QuestEd | Profile</title>
-    <link rel="stylesheet" href="quest-style.css" />
+    <link rel="stylesheet" href="css/quest-style.css" />
+    <link rel="stylesheet" href="css/auth.css">
 
     <style>
         body {
-            background: url("bg5.jpg") no-repeat center center fixed;
+            /* Override auth.css grid display if needed, but quest-style + local style should hold */
+            background: url("assets/bg5.jpg") no-repeat center center fixed;
             background-size: cover;
             min-height: 100vh;
-
             display: flex;
             justify-content: center;
             align-items: center;
-
             padding: 30px 14px;
+            font-family: 'Macondo', cursive;
         }
+
+        /* ... rest of styles ... */
+
 
         .profile-wrap {
             width: min(980px, 95vw);
-            transform: translateY(-60px);
+            transform: translateY(25px);
+            /* Fixed cutoff by removing negative translate */
             position: relative;
             z-index: 5;
+        }
+
+        /* ... */
+
+        .avatar {
+            width: 92px;
+            height: 92px;
+            border-radius: 50%;
+            background: transparent;
+            /* Transparent for pixel art */
+            border: 4px solid transparent;
+            /* No border ring */
+            box-shadow: 0 20px 55px rgba(0, 0, 0, 0.25);
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            /* Center content */
+            justify-content: center;
+            align-items: center;
+        }
+
+        .avatar::after {
+            content: "";
+            position: absolute;
+            inset: -6px;
+            border-radius: 999px;
+            box-shadow: 0 0 22px rgba(241, 196, 15, 0.35);
+            pointer-events: none;
+        }
+
+        .avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            /* Full pixel art visible */
+            display: block;
+            transform: scale(1.25);
+            /* Zoom to fill */
         }
 
 
@@ -139,32 +185,7 @@
             margin-bottom: 14px;
         }
 
-        .avatar {
-            width: 92px;
-            height: 92px;
-            border-radius: 999px;
-            background: rgba(244, 228, 188, 0.9);
-            border: 4px solid #3e2712;
-            box-shadow: 0 20px 55px rgba(0, 0, 0, 0.25);
-            overflow: hidden;
-            position: relative;
-        }
 
-        .avatar::after {
-            content: "";
-            position: absolute;
-            inset: -6px;
-            border-radius: 999px;
-            box-shadow: 0 0 22px rgba(241, 196, 15, 0.35);
-            pointer-events: none;
-        }
-
-        .avatar img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            display: block;
-        }
 
         .profile-title {
             display: flex;
@@ -184,6 +205,7 @@
                     #BF953F 100%);
             background-size: 200% auto;
             -webkit-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent;
             animation: shimmer 3s linear infinite;
 
@@ -314,6 +336,7 @@
             cursor: pointer;
             font-weight: 900;
             transition: 0.15s;
+            font-family: 'Macondo', cursive;
         }
 
         .mini-btn:hover {
@@ -402,6 +425,7 @@
             cursor: pointer;
             font-weight: 900;
             transition: 0.2s;
+            font-family: 'Macondo', cursive;
         }
 
         .big-btn:hover {
@@ -452,7 +476,7 @@
         <!-- Header -->
         <div class="profile-title-row">
             <div class="avatar">
-                <img id="avatarImg" src="avatar.jpg" alt="Avatar">
+                <img id="avatarImg" src="assets/avatar.jpg" alt="Avatar">
             </div>
 
             <div class="profile-title">
@@ -461,7 +485,7 @@
 
                 <div style="display:flex; gap:8px; margin-top:6px; flex-wrap:wrap;">
                     <input id="nameInput" placeholder="Set your name..."
-                        style="padding:8px 10px; border-radius:12px; border:2px solid rgba(62,39,18,0.35); font-weight:900;" />
+                        style="padding:8px 10px; border-radius:12px; border:2px solid rgba(62,39,18,0.35); font-weight:900; font-family: 'Macondo', cursive;" />
                     <button class="mini-btn play" onclick="saveName()">Save</button>
                     <button class="mini-btn info" onclick="location.href='python-level.html'">🗺️ Back to Map</button>
                 </div>
@@ -660,32 +684,48 @@
         }
 
         const savedName = localStorage.getItem("playerName");
+        const savedUser = JSON.parse(localStorage.getItem("questedUser") || "{}");
+
         if (savedName) document.getElementById("playerName").innerText = savedName;
+
+        if (savedUser.title) {
+            // Create or update a subtitle element if we want, or append to name
+            // For now let's just update the sub class div (currently holding player Name)
+            // Wait, id="playerName" is inside .sub class.
+            // Let's separate Name and Title.
+
+            // Actually, let's just make sure the avatar updates.
+        }
+
+        if (savedUser.avatar) {
+            document.getElementById("avatarImg").src = savedUser.avatar;
+        }
 
         function saveName() {
             const input = document.getElementById("nameInput").value.trim();
             if (!input) return;
             localStorage.setItem("playerName", input);
             document.getElementById("playerName").innerText = input;
+
+            // Also update the questedUser object to keep it in sync
+            const user = JSON.parse(localStorage.getItem("questedUser") || "{}");
+            user.name = input;
+            localStorage.setItem("questedUser", JSON.stringify(user));
+
             document.getElementById("nameInput").value = "";
         }
 
         document.getElementById("avatarImg").onerror = function () {
             this.src = "https://i.imgur.com/7k12EPD.png";
         };
-        function logout() {
-            if (!confirm("Logout from QuestEd?")) return;
-
-            localStorage.removeItem("isLoggedIn");
-            alert("Logged out ✅");
-            location.href = "login.html";
-        }
 
         // init
         buildQuestList();
         buildBadges();
         updateProgress();
     </script>
+    <script src="js/auth.js"></script>
+    <script>checkAuth();</script>
 </body>
 
 </html>

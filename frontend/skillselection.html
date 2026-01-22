@@ -1,31 +1,57 @@
-<!DOCTYPE HTML>
+<html lang="en">
 
 <head>
-    <link rel="stylesheet" href="skillselection.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Choose your learning path in QuestEd. Select from Python, Spanish, and more to begin your gamified journey.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <title>QuestEd | Choose Path</title>
+    <link rel="stylesheet" href="css/skillselection.css">
 </head>
 
 <body>
     <div class="quest-page">
-        <div class="highlighted-quest-box">
-            <h2 class="board-title">Choose your Path</h2>
+        <div class="top-actions">
+            <a href="profile.html" class="action-btn">👤 Profile</a>
+            <button onclick="logout()" class="action-btn">🚪 Logout</button>
         </div>
 
-        <div class="quest-stack">
-            <div class="quest-item">
-                <div class="info">
-                    <h3>The Python Path</h3>
-                    <p>Master the art of logic and build your own digital world.</p>
-                </div>
-                <button class="select-btn" onclick="location.href='python-level.html'">Accept</button>
+        <div class="container">
+            <div class="highlighted-quest-box">
+                <h1 class="board-title">Choose your Path</h1>
             </div>
 
-            <div class="quest-item">
-                <div class="info">
-                    <h3>The Spanish Path</h3>
-                    <p>Master the tongue of far-away lands.</p>
+            <div class="quest-stack">
+                <div class="quest-item" onclick="location.href='python-level.html'" style="cursor: pointer;">
+                    <div class="info">
+                        <h3>The Python Path</h3>
+                        <p>Master the art of logic and build your own digital world.</p>
+                    </div>
+                    <button class="select-btn" type="button"
+                        onclick="event.stopPropagation(); location.href='python-level.html'">Enter</button>
                 </div>
-                <button class="select-btn">Accept</button>
+
+                <div class="quest-item disabled" title="Coming Soon">
+                    <div class="info">
+                        <h3>The Spanish Path</h3>
+                        <p>Master the tongue of far-away lands.</p>
+                    </div>
+                    <button class="select-btn" disabled>Locked</button>
+                </div>
             </div>
         </div>
     </div>
+
+    <script src="js/auth.js"></script>
+    <script>
+        checkAuth();
+        function logout() {
+            localStorage.removeItem("isLoggedIn");
+            location.href = "login.html";
+        }
+    </script>
 </body>
+
+</html>

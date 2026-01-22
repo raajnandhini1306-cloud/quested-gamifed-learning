@@ -4,16 +4,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Navigate the Python Quest Map. Complete levels to unlock new challenges and master Python programming.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <title>QuestEd | Python Map</title>
-    <link rel="stylesheet" href="python-level.css">
+    <link rel="stylesheet" href="css/python-level.css">
 </head>
 
 <body>
 
     <nav class="game-nav">
-        <button class="nav-btn" onclick="location.href='skillselection.html'">🏠 Home</button>
-        <button class="nav-btn active">🗺️ Map</button>
-        <button class="nav-btn" onclick="location.href='profile.html'">👤 Profile</button>
+        <a href="skillselection.html" class="nav-btn" style="text-decoration:none;">🏠 Home</a>
+        <a href="#" class="nav-btn active" style="text-decoration:none; pointer-events: none;">🗺️ Map</a>
+        <a href="profile.html" class="nav-btn" style="text-decoration:none;">👤 Profile</a>
     </nav>
 
     <div class="full-screen-map">
@@ -57,9 +61,11 @@
 
     </div>
 
-
+    <script src="js/auth.js"></script>
     <script>
+        console.log("📍 Python Level Page Loaded");
 
+        checkAuth();
 
         const q1Done = localStorage.getItem("q1Complete") === "1";
 
@@ -69,6 +75,7 @@
         const q5Done = localStorage.getItem("q5Complete") === "1";
 
         function makeClickable(el) {
+            if (!el) return;
             el.classList.remove("locked");
             el.onclick = () => {
                 const href = el.dataset.href;
@@ -77,6 +84,7 @@
         }
 
         function lock(el) {
+            if (!el) return;
             el.classList.add("locked");
             el.onclick = () => {
                 alert("🔒 Complete the previous level first!");
@@ -84,11 +92,13 @@
         }
 
         function markCompleted(el) {
+            if (!el) return;
             el.classList.add("completed");
             el.classList.remove("current");
         }
 
         function unlockWithAnim(el) {
+            if (!el) return;
             el.classList.remove("locked");
             el.classList.add("unlocking");
             setTimeout(() => el.classList.remove("unlocking"), 700);
@@ -96,6 +106,7 @@
         }
 
         function setCurrent(el) {
+            if (!el) return;
             el.classList.add("current");
             el.classList.remove("locked");
         }
@@ -117,22 +128,16 @@
         if (q5Done) markCompleted(lvl5);
 
         //  Unlock order:
-        // lvl2 unlock if q1Done
-        // lvl3 unlock if q2Done
-        // lvl4 unlock if q3Done
-        // lvl5 unlock if q4Done
-
         if (q1Done) unlockWithAnim(lvl2); else lock(lvl2);
         if (q2Done) unlockWithAnim(lvl3); else lock(lvl3);
         if (q3Done) unlockWithAnim(lvl4); else lock(lvl4);
         if (q4Done) unlockWithAnim(lvl5); else lock(lvl5);
 
         // Set CURRENT level as first incomplete
-        // If level1 not done -> current on lvl1 (already)
-        // else current becomes first locked/uncompleted unlocked one
         function setCurrentLevel() {
-            // clear old current
-            [lvl1, lvl2, lvl3, lvl4, lvl5].forEach(el => el.classList.remove("current"));
+            [lvl1, lvl2, lvl3, lvl4, lvl5].forEach(el => {
+                if (el) el.classList.remove("current");
+            });
 
             if (!q1Done) return setCurrent(lvl1);
             if (!q2Done) return setCurrent(lvl2);
@@ -141,7 +146,8 @@
             if (!q5Done) return setCurrent(lvl5);
 
             // all complete
-            document.getElementById("allCompleteBanner").style.display = "block";
+            const banner = document.getElementById("allCompleteBanner");
+            if (banner) banner.style.display = "block";
         }
 
         setCurrentLevel();

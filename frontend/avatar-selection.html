@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuestEd | Create Character</title>
+    <link rel="stylesheet" href="css/avatar-selection.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Macondo&display=swap">
+</head>
+
+<body>
+
+    <div class="container">
+        <h1>Create Your Character</h1>
+        <p class="subtitle">Every hero needs a face and a destiny.</p>
+
+        <form onsubmit="saveCharacter(event)">
+
+            <div class="form-group">
+                <label>Choose your Avatar</label>
+                <br>
+                <div class="avatar-grid">
+                    <div class="avatar-option option-novice selected"
+                        onclick="selectAvatar(this, 'assets/avatar_novice.png')">
+                        <img src="assets/avatar_novice.png" alt="Novice">
+                    </div>
+                    <div class="avatar-option option-wizard" onclick="selectAvatar(this, 'assets/avatar_wizard.png')">
+                        <img src="assets/avatar_wizard.png" alt="Wizard">
+                    </div>
+                    <div class="avatar-option option-warrior" onclick="selectAvatar(this, 'assets/avatar_warrior.png')">
+                        <img src="assets/avatar_warrior.png" alt="Warrior">
+                    </div>
+                    <div class="avatar-option option-archer" onclick="selectAvatar(this, 'assets/avatar_archer.png')">
+                        <img src="assets/avatar_archer.png" alt="Archer">
+                    </div>
+                </div>
+                <input type="hidden" id="selectedAvatar" value="assets/avatar_novice.png">
+            </div>
+
+            <div class="form-group">
+                <label>Class Title</label>
+                <input type="text" id="classTitle" placeholder="e.g. Novice Coder, Code Warrior" required>
+            </div>
+
+            <div class="form-group">
+                <label>Your Goal</label>
+                <select id="userGoal">
+                    <option value="hobby">Just for fun / Hobby</option>
+                    <option value="student">School / University</option>
+                    <option value="career">Career Change</option>
+                    <option value="upskill">Professional Upskilling</option>
+                </select>
+            </div>
+
+            <button type="submit" class="btn-primary">Begin Adventure ✨</button>
+
+        </form>
+    </div>
+
+    <script src="js/auth.js"></script>
+    <script>
+        checkAuth();
+
+        function selectAvatar(el, src) {
+            // Remove selected class from all
+            document.querySelectorAll('.avatar-option').forEach(d => d.classList.remove('selected'));
+            // Add to clicked
+            el.classList.add('selected');
+            // Update hidden input
+            document.getElementById('selectedAvatar').value = src;
+        }
+
+        function saveCharacter(e) {
+            e.preventDefault();
+
+            const avatar = document.getElementById('selectedAvatar').value;
+            const title = document.getElementById('classTitle').value;
+            const goal = document.getElementById('userGoal').value;
+
+            // Save to localStorage
+            const user = JSON.parse(localStorage.getItem('questedUser') || "{}");
+            user.avatar = avatar;
+            user.title = title;
+            user.goal = goal;
+
+            localStorage.setItem('questedUser', JSON.stringify(user));
+
+            // Also update current session if needed, though profile reads from questedUser usually or we might need to sync.
+            // Profile.html reads "avatar.jpg" by default or from user data? 
+            // We should ensure profile.html uses this data.
+
+            // Let's assume profile.html needs to be updated to read "avatar" from localStorage
+            // For now, let's redirect.
+            location.href = 'skillselection.html';
+        }
+    </script>
+</body>
+
+</html>
