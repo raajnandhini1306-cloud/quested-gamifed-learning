@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Level 3: The Gender Gatekeeper</title>
+    <link rel="stylesheet" href="quest-style.css">
+
+    <style>
+        .gate-box {
+            margin-top: 30px;
+            background: #2c1808;
+            border: 4px solid #f1c40f;
+            padding: 32px;
+            border-radius: 16px;
+            text-align: center;
+        }
+
+        .word {
+            font-size: 42px;
+            font-weight: 900;
+            color: #f1c40f;
+            margin-bottom: 10px;
+        }
+
+        .meaning {
+            font-size: 20px;
+            color: #f4eac8;
+            margin-bottom: 28px;
+            opacity: 0.85;
+            font-weight: 700;
+        }
+
+        .btn-row {
+            display: flex;
+            justify-content: center;
+            gap: 26px;
+            margin-top: 20px;
+        }
+
+        .gender-btn {
+            padding: 18px 30px;
+            font-size: 26px;
+            font-weight: 900;
+            border-radius: 12px;
+            border: none;
+            cursor: pointer;
+            transition: transform 0.1s ease, background 0.2s ease;
+        }
+
+        .gender-btn:active {
+            transform: scale(0.95);
+        }
+
+        .btn-el {
+            background: #3498db;
+            color: white;
+        }
+
+        .btn-la {
+            background: #e74c3c;
+            color: white;
+        }
+
+        #feedback {
+            margin-top: 18px;
+            font-size: 20px;
+            font-weight: 900;
+            text-align: center;
+        }
+
+        .shake {
+            animation: shake 0.25s linear;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-6px); }
+            50% { transform: translateX(6px); }
+            75% { transform: translateX(-4px); }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="parchment">
+        <h2>Quest: The Gender Gatekeeper</h2>
+        <p>Choose <b>EL</b> for masculine nouns and <b>LA</b> for feminine nouns.</p>
+
+        <!-- HUD -->
+        <div class="hud">
+            <div class="hud-top">
+                <span id="progressText">Word: 1 / 10</span>
+                <span>Rule: Masculine = EL | Feminine = LA</span>
+            </div>
+
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+        </div>
+
+        <div class="gate-box">
+            <div id="wordDisplay" class="word">Loading...</div>
+            <div id="meaningDisplay" class="meaning">Meaning...</div>
+
+            <div class="btn-row">
+                <button class="gender-btn btn-el" onclick="choose('el')">EL</button>
+                <button class="gender-btn btn-la" onclick="choose('la')">LA</button>
+            </div>
+
+            <div id="feedback"></div>
+        </div>
+    </div>
+
+    <script>
+        const WORDS = [
+            { word: "gato", meaning: "cat", gender: "el" },
+            { word: "casa", meaning: "house", gender: "la" },
+            { word: "libro", meaning: "book", gender: "el" },
+            { word: "silla", meaning: "chair", gender: "la" },
+            { word: "perro", meaning: "dog", gender: "el" },
+            { word: "mesa", meaning: "table", gender: "la" },
+            { word: "zapato", meaning: "shoe", gender: "el" },
+            { word: "flor", meaning: "flower", gender: "la" },
+            { word: "árbol", meaning: "tree", gender: "el" },
+            { word: "ciudad", meaning: "city", gender: "la" }
+        ];
+
+        let index = 0;
+
+        const wordDisplay = document.getElementById("wordDisplay");
+        const meaningDisplay = document.getElementById("meaningDisplay");
+        const progressText = document.getElementById("progressText");
+        const progressFill = document.getElementById("progressFill");
+        const feedback = document.getElementById("feedback");
+
+        function loadWord() {
+            const w = WORDS[index];
+            wordDisplay.innerText = w.word;
+            meaningDisplay.innerText = `(${w.meaning})`;
+
+            feedback.innerText = "";
+
+            progressText.innerText = `Word: ${index + 1} / ${WORDS.length}`;
+            progressFill.style.width = `${((index) / WORDS.length) * 100}%`;
+        }
+
+        function choose(choice) {
+            const correct = WORDS[index].gender;
+
+            if (choice === correct) {
+                feedback.style.color = "green";
+                feedback.innerText = "✓ Correct!";
+                index++;
+
+                if (index >= WORDS.length) {
+                    finishQuest();
+                    return;
+                }
+
+                setTimeout(loadWord, 500);
+
+            } else {
+                feedback.style.color = "red";
+                feedback.innerText = "✗ Wrong! Try again.";
+                wordDisplay.classList.add("shake");
+                setTimeout(() => wordDisplay.classList.remove("shake"), 300);
+            }
+        }
+
+        function finishQuest() {
+            feedback.style.color = "green";
+            feedback.innerText = "🏆 Level Complete! Returning to map...";
+
+            progressFill.style.width = "100%";
+            localStorage.setItem("s3Complete", "1");
+
+            setTimeout(() => {
+                location.href = "spanish-level.html";
+            }, 1500);
+        }
+
+        loadWord();
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Academia de Español – Graduación</title>
+    <link rel="stylesheet" href="quest-style.css">
+    <style>
+        body {
+            background-image: url(bg4.jpg);
+            background-size: cover;
+            background-blend-mode: overlay;
+            overflow: hidden;
+        }
+
+        .victory-card {
+            text-align: center;
+            padding: 50px;
+            animation: unfold 1s ease-out;
+        }
+
+        .trophy {
+            font-size: 100px;
+            margin-bottom: 20px;
+            filter: drop-shadow(0 0 20px #f1c40f);
+            animation: float 3s ease-in-out infinite;
+        }
+
+        h1.legendary {
+            font-family: "UnifrakturCook", cursive;
+            font-size: 70px;
+            background: linear-gradient(90deg, #BF953F, #FCF6BA, #B38728, #FBF5B7, #AA771C);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shimmer 3s linear infinite;
+            margin: 10px 0;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: 0% }
+            100% { background-position: 200% }
+        }
+
+        .badge-row {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .badge {
+            width: 60px;
+            height: 60px;
+            background: #f1c40f;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            border: 3px solid #3e2712;
+            box-shadow: 0 0 10px rgba(241, 196, 15, 0.5);
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        @keyframes unfold {
+            0% { transform: scaleY(0); opacity: 0; }
+            100% { transform: scaleY(1); opacity: 1; }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="victory-card">
+        <div class="trophy">🎓</div>
+
+        <h1 class="legendary">Maestro del Español</h1>
+
+        <div class="parchment" style="max-width: 600px; margin: 0 auto;">
+            <h2>¡Graduación Completa!</h2>
+
+            <p>
+                Has superado las 5 Grandes Misiones del Español.  
+                Tu vocabulario es fuerte, tus verbos son precisos…  
+                y el idioma ahora responde a tu llamado.
+            </p>
+
+            <div class="badge-row">
+                <div class="badge" title="Saludos y Frases Básicas">👋</div>
+                <div class="badge" title="Números">🔢</div>
+                <div class="badge" title="Género">⚧️</div>
+                <div class="badge" title="Verbos">📝</div>
+                <div class="badge" title="Gran Prueba">🐉</div>
+            </div>
+
+            <button class="play-btn" onclick="location.href='spanish-level.html'">Volver al Mapa</button>
+
+            <br><br>
+
+            <button class="nav-btn" onclick="resetSpanish()"
+                style="color: #8b4513; font-size: 0.8rem; cursor: pointer; background: none; border: none;">
+                Reiniciar Progreso de Español
+            </button>
+        </div>
+    </div>
+
+    <script>
+        function resetSpanish() {
+            if (confirm("¿Seguro que quieres borrar tu progreso de Español?")) {
+
+                // Only erase Spanish quest progress
+                localStorage.removeItem("s1Complete");
+                localStorage.removeItem("s2Complete");
+                localStorage.removeItem("s3Complete");
+                localStorage.removeItem("s4Complete");
+                localStorage.removeItem("s5Complete");
+
+                localStorage.removeItem("spanishQuestC"); // from quest 1
+
+                location.href = 'spanish-level.html';
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            document.body.classList.add("page-fade");
+            requestAnimationFrame(() => document.body.classList.add("show"));
+        });
+
+        function go(url) {
+            const overlay = document.getElementById("loadingOverlay");
+            overlay && overlay.classList.add("show");
+
+            document.body.classList.add("page-exit");
+            setTimeout(() => {
+                location.href = url;
+            }, 350);
+        }
+
+        document.addEventListener("click", (e) => {
+            const a = e.target.closest("a");
+            if (!a) return;
+
+            const href = a.getAttribute("href");
+            if (!href || href.startsWith("#") || href.startsWith("javascript:")) return;
+
+            e.preventDefault();
+            go(href);
+        });
+    </script>
+
+</body>
+
+</html>

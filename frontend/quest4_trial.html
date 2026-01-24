@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Level 4: Spanish Verb Mastery</title>
+    <link rel="stylesheet" href="quest-style.css">
+
+    <style>
+        body {
+            font-family: "Segoe UI", sans-serif;
+        }
+
+        .parchment {
+            padding: 25px;
+        }
+
+        h2 {
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .storybook-box {
+            background: #f7f1d4;
+            border: 2px solid #c8b07a;
+            padding: 18px;
+            border-radius: 14px;
+            width: min(600px, 95vw);
+            margin: auto;
+            line-height: 1.55;
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.15);
+            text-align: center;
+            font-weight: 700;
+        }
+
+        .table-block {
+            background: #fffaf0;
+            border: 2px solid #c8b07a;
+            border-radius: 14px;
+            padding: 14px;
+            margin-top: 14px;
+        }
+
+        .row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 12px;
+            border-bottom: 1px solid #e7d9b7;
+            font-weight: 700;
+        }
+
+        .row:last-child {
+            border-bottom: none;
+        }
+
+        .question-box {
+            margin-top: 18px;
+            background: #fff5da;
+            border: 2px solid #c8b07a;
+            padding: 16px;
+            border-radius: 12px;
+            line-height: 1.6;
+            font-weight: 700;
+            text-align: center;
+            display: none;
+        }
+
+        .crystal-container {
+            margin-top: 20px;
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            justify-content: center;
+            display: none;
+        }
+
+        .crystal {
+            width: 120px;
+            padding: 14px;
+            background: #d9c7a7;
+            border-radius: 12px;
+            cursor: pointer;
+            text-align: center;
+            font-size: 18px;
+            font-weight: 900;
+            transition: transform 0.15s ease;
+        }
+
+        .crystal:hover {
+            transform: scale(1.05);
+        }
+
+        .crystal.correct {
+            background: #8fe388;
+            border: 2px solid #3b7a31;
+        }
+
+        .crystal.wrong {
+            background: #ffb5b5;
+            border: 2px solid #b43636;
+        }
+
+        .hud {
+            margin-top: 16px;
+            margin-bottom: 16px;
+            width: min(600px, 95vw);
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .hud-top {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 6px;
+            font-weight: 900;
+        }
+
+        .progress-bar {
+            height: 12px;
+            width: 100%;
+            background: #e3d6b7;
+            border-radius: 999px;
+            overflow: hidden;
+            border: 1px solid #c8b07a;
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #27ae60, #2ecc71);
+            transition: width 0.3s ease;
+        }
+
+        .next-btn {
+            margin-top: 20px;
+            padding: 12px 16px;
+            background: #27ae60;
+            color: white;
+            border-radius: 10px;
+            border: none;
+            cursor: pointer;
+            font-weight: 900;
+            display: none;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        #feedback {
+            margin-top: 16px;
+            font-weight: 900;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="parchment">
+        <h2>Quest 4: Spanish Verb Mastery</h2>
+
+        <div class="hud">
+            <div class="hud-top">
+                <span id="roundText">Exercise: 1 / 7</span>
+                <span id="verbName">Verb: ser</span>
+            </div>
+
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+        </div>
+
+        <div class="storybook-box" id="teachingBox">
+            Loading lesson...
+        </div>
+
+        <div class="table-block" id="conjTable" style="display:none;"></div>
+
+        <div class="question-box" id="questionBox"></div>
+
+        <div class="crystal-container" id="crystalContainer"></div>
+
+        <button class="next-btn" id="nextBtn" onclick="nextRound()">Next ➜</button>
+
+        <p id="feedback"></p>
+    </div>
+
+    <script>
+        const PRONOUNS = ["yo", "tú", "él", "ella", "nosotros", "ellos"];
+
+        const PRONOUN_MEANINGS = {
+            yo: "I",
+            tú: "you",
+            él: "he",
+            ella: "she",
+            nosotros: "we",
+            ellos: "they"
+        };
+
+        const VERBS = [
+            { verb: "ser", meaning: "to be", forms: ["soy", "eres", "es", "es", "somos", "son"] },
+            { verb: "estar", meaning: "to be", forms: ["estoy", "estás", "está", "está", "estamos", "están"] },
+            { verb: "tener", meaning: "to have", forms: ["tengo", "tienes", "tiene", "tiene", "tenemos", "tienen"] },
+            { verb: "hablar", meaning: "to speak", forms: ["hablo", "hablas", "habla", "habla", "hablamos", "hablan"] },
+            { verb: "vivir", meaning: "to live", forms: ["vivo", "vives", "vive", "vive", "vivimos", "viven"] },
+            { verb: "comer", meaning: "to eat", forms: ["como", "comes", "come", "come", "comemos", "comen"] },
+            { verb: "ir", meaning: "to go", forms: ["voy", "vas", "va", "va", "vamos", "van"] }
+        ];
+
+        let round = 0;
+
+        const teachingBox = document.getElementById("teachingBox");
+        const conjTable = document.getElementById("conjTable");
+        const questionBox = document.getElementById("questionBox");
+        const container = document.getElementById("crystalContainer");
+        const nextBtn = document.getElementById("nextBtn");
+        const roundText = document.getElementById("roundText");
+        const verbName = document.getElementById("verbName");
+        const progressFill = document.getElementById("progressFill");
+        const feedback = document.getElementById("feedback");
+
+        function loadRound() {
+            const data = VERBS[round];
+            roundText.innerText = `Exercise: ${round + 1} / ${VERBS.length}`;
+            verbName.innerText = `Verb: ${data.verb}`;
+            progressFill.style.width = `${(round / VERBS.length) * 100}%`;
+
+            teachingBox.innerHTML = `
+                <div style="font-size:22px; font-weight:900;">
+                    "${data.verb}" means "${data.meaning}"
+                </div>
+                <div style="margin-top:10px; opacity:0.85;">
+                    Study the table below carefully.
+                </div>
+            `;
+
+            // Conjugation table
+            conjTable.style.display = "block";
+            conjTable.innerHTML = "";
+            PRONOUNS.forEach((p, i) => {
+                conjTable.innerHTML += `
+                    <div class="row">
+                        <span>${p}</span>
+                        <span>${data.forms[i]}</span>
+                    </div>
+                `;
+            });
+
+            askQuestion(data);
+        }
+
+        function askQuestion(data) {
+            const index = Math.floor(Math.random() * PRONOUNS.length);
+            const pronoun = PRONOUNS[index];
+            const correct = data.forms[index];
+
+            questionBox.style.display = "block";
+            container.style.display = "flex";
+            nextBtn.style.display = "none";
+            feedback.innerText = "";
+
+            questionBox.innerHTML = `
+                <div style="font-size:20px; font-weight:900; margin-bottom:4px;">
+                    "${data.verb}" means "${data.meaning}"
+                </div>
+                <div>Pronoun: <b>${pronoun}</b> → "${PRONOUN_MEANINGS[pronoun]}"</div>
+                <br>
+                <div style="font-weight:900;">For <b>${pronoun}</b>, choose the correct form of <b>${data.verb}</b>:</div>
+            `;
+
+            const options = shuffle([
+                correct,
+                randomDistractor(data, correct),
+                randomDistractor(data, correct)
+            ]);
+
+            container.innerHTML = "";
+            options.forEach(option => {
+                const btn = document.createElement("div");
+                btn.className = "crystal";
+                btn.innerText = option;
+                btn.onclick = () => checkAnswer(btn, option, correct);
+                container.appendChild(btn);
+            });
+        }
+
+        function checkAnswer(btn, option, correct) {
+            if (option === correct) {
+                btn.classList.add("correct");
+                feedback.innerText = "✨ Correct!";
+                nextBtn.style.display = "block";
+            } else {
+                btn.classList.add("wrong");
+                feedback.innerText = "❌ Try again.";
+            }
+        }
+
+        function randomDistractor(data, correct) {
+            let form;
+            do {
+                form = data.forms[Math.floor(Math.random() * data.forms.length)];
+            } while (form === correct);
+            return form;
+        }
+
+        function shuffle(arr) {
+            return arr.sort(() => Math.random() - 0.5);
+        }
+
+        function nextRound() {
+            round++;
+            if (round >= VERBS.length) {
+                localStorage.setItem("s4Complete", "1");
+                feedback.innerText = "🏆 Quest Complete! Returning to map...";
+                setTimeout(() => location.href = "spanish-level.html", 1500);
+                return;
+            }
+            loadRound();
+        }
+
+        loadRound();
+    </script>
+</body>
+
+</html>
+
+
+
+
+

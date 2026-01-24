@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Spanish Adventure Quest</title>
+
+    <link rel="stylesheet" href="quest-style.css">
+
+    <style>
+        .hud {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 18px;
+        }
+
+        .task-chip {
+            background: #3e2712;
+            color: #f1c40f;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 16px;
+            border: 2px solid #f1c40f;
+        }
+
+        .progress-wrap {
+            width: 60%;
+        }
+
+        .progress-text {
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background: rgba(0, 0, 0, 0.15);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #8e44ad, #f1c40f);
+            transition: width 0.4s ease;
+        }
+
+        #taskInstr {
+            font-size: 18px;
+            white-space: pre-wrap;
+            margin-top: 18px;
+        }
+
+        #userAnswer {
+            width: 100%;
+            padding: 14px;
+            font-size: 18px;
+            margin-top: 20px;
+            border: 2px solid #3e2712;
+            border-radius: 10px;
+            background: #fffdf4;
+        }
+
+        .adventure-btn {
+            margin-top: 16px;
+            padding: 12px 22px;
+            border-radius: 30px;
+            border: 2px solid #3e2712;
+            font-size: 1rem;
+            font-family: 'Macondo', cursive;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .primary {
+            background: #3e2712;
+            color: #f1c40f;
+        }
+
+        .secondary {
+            background: #f1c40f;
+            color: #3e2712;
+        }
+
+        .feedback {
+            margin-top: 12px;
+            font-weight: bold;
+            font-size: 18px;
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <div class="scroll-container page-fade show">
+        <div class="parchment">
+            <p><br><br></p>
+            <h1 class="quest-title">The Spanish Adventure Quest</h1>
+
+            <div class="lesson-content">
+
+                <!-- HUD -->
+                <div class="hud">
+                    <div class="task-chip" id="taskChip">Task</div>
+
+                    <div class="progress-wrap">
+                        <div class="progress-text">
+                            <span id="progressText">Progress: 0%</span>
+                            <span id="taskCount">1 / 10</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progressFill"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="taskInstr">Loading...</div>
+
+                <input id="userAnswer" placeholder="Write your answer...">
+
+                <button class="adventure-btn primary" id="submitBtn">Submit</button>
+                <p id="feedback" class="feedback"></p>
+
+                <button class="adventure-btn secondary" id="nextBtn" style="display:none;">Next</button><br>
+                <button class="adventure-btn secondary" id="resetBtn">Reset Quest</button>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay">
+        <div class="loader-scroll">
+            Loading...
+            <div class="loader-bar">
+                <div class="loader-fill"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentTask = localStorage.getItem('spanishQuestC') ? parseInt(localStorage.getItem('spanishQuestC')) : 0;
+
+        const tasks = [
+            {
+                instr: `
+You meet a traveler on a dusty road.
+<div class="lesson-block">
+    <div class="lesson-title">Spanish Lesson</div>
+    <div class="lesson-spanish">"Hello" in Spanish is <strong>Hola</strong>.</div>
+    Use it to greet someone politely.
+</div>
+<div class="type-line">Type: <strong>hola</strong></div>
+                `,
+                answer: 'hola'
+            },
+            {
+                instr: `
+You want to express gratitude during your journey.
+<div class="lesson-block">
+    <div class="lesson-title">Spanish Lesson</div>
+    <div class="lesson-spanish">"Thank you" in Spanish is <strong>Gracias</strong>.</div>
+    Say it when you appreciate someone's help.
+</div>
+<div class="type-line">Type: <strong>gracias</strong></div>
+                `,
+                answer: 'gracias'
+            },
+            {
+                instr: `
+You are leaving a peaceful village.
+<div class="lesson-block">
+    <div class="lesson-title">Spanish Lesson</div>
+    <div class="lesson-spanish">"Goodbye" in Spanish is <strong>Adiós</strong>.</div>
+    A warm way to part from someone.
+</div>
+<div class="type-line">Type: <strong>adios</strong></div>
+                `,
+                answer: 'adios'
+            },
+            {
+                instr: `
+You meet someone friendly on the path.
+<div class="lesson-block">
+    <div class="lesson-title">Spanish Lesson</div>
+    <div class="lesson-spanish">"Friend" in Spanish is <strong>Amigo</strong>.</div>
+    A word filled with warmth and trust.
+</div>
+<div class="type-line">Type: <strong>amigo</strong></div>
+                `,
+                answer: 'amigo'
+            },
+            {
+                instr: `
+The sun is harsh, and you feel thirsty.
+<div class="lesson-block">
+    <div class="lesson-title">Spanish Lesson</div>
+    <div class="lesson-spanish">"Water" in Spanish is <strong>Agua</strong>.</div>
+    One of the most important words to know.
+</div>
+<div class="type-line">Type: <strong>agua</strong></div>
+                `,
+                answer: 'agua'
+            },
+            {
+                instr: `
+You finally reach a place of rest.
+<div class="lesson-block">
+    <div class="lesson-title">Spanish Lesson</div>
+    <div class="lesson-spanish">"House" in Spanish is <strong>Casa</strong>.</div>
+    A word that brings comfort.
+</div>
+<div class="type-line">Type: <strong>casa</strong></div>
+                `,
+                answer: 'casa'
+            },
+            {
+                instr: `
+A bright banner waves in the wind.
+<div class="lesson-block">
+    <div class="lesson-title">Spanish Lesson</div>
+    <div class="lesson-spanish">"Red" in Spanish is <strong>Rojo</strong>.</div>
+    A simple and vivid color word.
+</div>
+<div class="type-line">Type: <strong>rojo</strong></div>
+                `,
+                answer: 'rojo'
+            },
+            {
+                instr: `
+You smell delicious aromas from a nearby stall.
+<div class="lesson-block">
+    <div class="lesson-title">Spanish Lesson</div>
+    <div class="lesson-spanish">"Food" in Spanish is <strong>Comida</strong>.</div>
+    A word that always brings joy.
+</div>
+<div class="type-line">Type: <strong>comida</strong></div>
+                `,
+                answer: 'comida'
+            },
+            {
+                instr: `
+A festival fills the street with laughter.
+<div class="lesson-block">
+    <div class="lesson-title">Spanish Lesson</div>
+    <div class="lesson-spanish">"Happy" in Spanish is <strong>Feliz</strong>.</div>
+    A bright, cheerful expression.
+</div>
+<div class="type-line">Type: <strong>feliz</strong></div>
+                `,
+                answer: 'feliz'
+            },
+            {
+                instr: `
+You feel proud of how far you've come.
+<div class="lesson-block">
+    <div class="lesson-title">Spanish Lesson</div>
+    <div class="lesson-spanish">"Learned" in Spanish is <strong>Aprendido</strong>.</div>
+    A perfect word to end your adventure.
+</div>
+<div class="type-line">Type: <strong>aprendido</strong></div>
+                `,
+                answer: 'aprendido'
+            }
+        ];
+
+        const taskInstr = document.getElementById("taskInstr");
+        const progressFill = document.getElementById("progressFill");
+        const progressText = document.getElementById("progressText");
+        const taskCount = document.getElementById("taskCount");
+        const nextBtn = document.getElementById("nextBtn");
+        const feedback = document.getElementById("feedback");
+        const userAnswer = document.getElementById("userAnswer");
+
+        function updateHUD() {
+            const percent = Math.round((currentTask / tasks.length) * 100);
+            taskChip.textContent = `Task ${currentTask + 1}`;
+            progressText.textContent = `Progress: ${percent}%`;
+            taskCount.textContent = `${Math.min(currentTask + 1, tasks.length)} / ${tasks.length}`;
+            progressFill.style.width = percent + "%";
+        }
+
+        function loadTask() {
+            if (currentTask >= tasks.length) {
+                // FULLY COMPLETE
+                taskInstr.innerHTML = "You have completed your Spanish adventure!";
+                feedback.style.color = "#4f7c39";
+                feedback.textContent = "Quest Completed! Returning to map...";
+
+                // Mark level complete
+                localStorage.setItem("s1Complete", "1");
+
+                setTimeout(() => {
+                    location.href = "spanish-level.html";
+                }, 1500);
+
+                return;
+            }
+            updateHUD();
+            feedback.textContent = "";
+            taskInstr.innerHTML = tasks[currentTask].instr;
+            userAnswer.value = "";
+            nextBtn.style.display = "none";
+        }
+
+        function checkAnswer() {
+            const val = userAnswer.value.trim().toLowerCase();
+            if (val === tasks[currentTask].answer) {
+                feedback.style.color = "#4f7c39";
+                feedback.textContent = "Correct!";
+                nextBtn.style.display = "inline-block";
+                currentTask++;
+                localStorage.setItem("spanishQuestC", currentTask);
+            } else {
+                feedback.style.color = "#b84141";
+                feedback.textContent = "Incorrect. Try again.";
+            }
+        }
+
+        document.getElementById("submitBtn").addEventListener("click", checkAnswer);
+        nextBtn.addEventListener("click", loadTask);
+
+        document.getElementById("resetBtn").addEventListener("click", () => {
+            currentTask = 0;
+            localStorage.removeItem("spanishQuestC");
+            loadTask();
+        });
+
+        window.onload = loadTask;
+    </script>
+
+</body>
+
+</html>
+

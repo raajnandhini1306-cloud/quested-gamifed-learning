@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuestEd | Spanish Map</title>
+    <link rel="stylesheet" href="python-level.css">
+</head>
+
+<body>
+
+    <nav class="game-nav">
+        <button class="nav-btn" onclick="location.href='skillselection.html'">🏠 Home</button>
+        <button class="nav-btn active">🗺️ Map</button>
+        <button class="nav-btn" onclick="location.href='profile.html'">👤 Profile</button>
+    </nav>
+
+    <div class="full-screen-map">
+
+        <div class="parchment-container">
+            <h1>Spanish: Quest Map</h1>
+            <div id="allCompleteBanner" class="all-complete" style="display:none;">
+                🏆 All Spanish Quests Completed!
+            </div>
+        </div>
+
+        <!-- Level 1 -->
+        <div class="waypoint current" id="lvl1" data-href="quest1_trial.html" style="top: 80%; left: 12%;">
+            <div class="pin"></div>
+            <span class="label">Level 1</span>
+        </div>
+
+        <!-- Level 2 -->
+        <div class="waypoint locked" id="lvl2" data-href="quest2_trial.html" style="top: 78%; left: 35%;">
+            <div class="pin"></div>
+            <span class="label">Level 2</span>
+        </div>
+
+        <!-- Level 3 -->
+        <div class="waypoint locked" id="lvl3" data-href="quest3_trial.html" style="top: 54%; left: 50%;">
+            <div class="pin"></div>
+            <span class="label">Level 3</span>
+        </div>
+
+        <!-- Level 4 -->
+        <div class="waypoint locked" id="lvl4" data-href="quest4_trial.html" style="top: 48%; left: 75%;">
+            <div class="pin"></div>
+            <span class="label">Level 4</span>
+        </div>
+
+        <!-- Level 5 -->
+        <div class="waypoint locked" id="lvl5" data-href="quest5_trial.html" style="top: 25%; left: 90%;">
+            <div class="pin"></div>
+            <span class="label">Level 5</span>
+        </div>
+
+    </div>
+
+    <script>
+
+        // Completed checks for Spanish quests
+        const s1Done = localStorage.getItem("s1Complete") === "1";
+        const s2Done = localStorage.getItem("s2Complete") === "1";
+        const s3Done = localStorage.getItem("s3Complete") === "1";
+        const s4Done = localStorage.getItem("s4Complete") === "1";
+        const s5Done = localStorage.getItem("s5Complete") === "1";
+
+        function makeClickable(el) {
+            el.classList.remove("locked");
+            el.onclick = () => {
+                const href = el.dataset.href;
+                if (href) location.href = href;
+            };
+        }
+
+        function lock(el) {
+            el.classList.add("locked");
+            el.onclick = () => {
+                alert("🔒 Complete the previous level first!");
+            };
+        }
+
+        function markCompleted(el) {
+            el.classList.add("completed");
+            el.classList.remove("current");
+        }
+
+        function unlockWithAnim(el) {
+            el.classList.remove("locked");
+            el.classList.add("unlocking");
+            setTimeout(() => el.classList.remove("unlocking"), 700);
+            makeClickable(el);
+        }
+
+        function setCurrent(el) {
+            el.classList.add("current");
+            el.classList.remove("locked");
+        }
+
+        const lvl1 = document.getElementById("lvl1");
+        const lvl2 = document.getElementById("lvl2");
+        const lvl3 = document.getElementById("lvl3");
+        const lvl4 = document.getElementById("lvl4");
+        const lvl5 = document.getElementById("lvl5");
+
+        // Level 1 always unlocked
+        makeClickable(lvl1);
+
+        // Mark completed
+        if (s1Done) markCompleted(lvl1);
+        if (s2Done) markCompleted(lvl2);
+        if (s3Done) markCompleted(lvl3);
+        if (s4Done) markCompleted(lvl4);
+        if (s5Done) markCompleted(lvl5);
+
+        // Unlock hierarchy
+        if (s1Done) unlockWithAnim(lvl2); else lock(lvl2);
+        if (s2Done) unlockWithAnim(lvl3); else lock(lvl3);
+        if (s3Done) unlockWithAnim(lvl4); else lock(lvl4);
+        if (s4Done) unlockWithAnim(lvl5); else lock(lvl5);
+
+        // Decide current level
+        function setCurrentLevel() {
+            [lvl1, lvl2, lvl3, lvl4, lvl5].forEach(el => el.classList.remove("current"));
+
+            if (!s1Done) return setCurrent(lvl1);
+            if (!s2Done) return setCurrent(lvl2);
+            if (!s3Done) return setCurrent(lvl3);
+            if (!s4Done) return setCurrent(lvl4);
+            if (!s5Done) return setCurrent(lvl5);
+
+            // All quests complete
+            document.getElementById("allCompleteBanner").style.display = "block";
+
+            // Auto redirect to Spanish Graduation Page
+            setTimeout(() => {
+                location.href = "victory-spanish.html";
+            }, 1800);
+        }
+
+        setCurrentLevel();
+
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Level 5: La Gran Prueba</title>
+    <link rel="stylesheet" href="quest-style.css">
+
+    <style>
+        .boss-area {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .arena {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .bars {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin: 10px 0 5px;
+        }
+
+        .bar-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            font-weight: 900;
+        }
+
+        .hp-bar {
+            width: 100%;
+            height: 16px;
+            background: rgba(0, 0, 0, 0.28);
+            border: 2px solid #3e2712;
+            border-radius: 999px;
+            overflow: hidden;
+        }
+
+        .hp-fill {
+            width: 100%;
+            height: 100%;
+            transition: width 0.35s;
+        }
+
+        #boss-fill {
+            background: #e74c3c;
+        }
+
+        #player-fill {
+            background: #22c55e;
+        }
+
+        .teaching-box {
+            background: #f4e4bc;
+            border: 2px solid #3e2712;
+            padding: 14px;
+            border-radius: 10px;
+            font-weight: 800;
+            white-space: pre-line;
+            line-height: 1.45;
+            margin-bottom: 10px;
+        }
+
+        .quiz-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .option-btn {
+            background: #f4e4bc;
+            border: 2px solid #3e2712;
+            padding: 12px;
+            cursor: pointer;
+            font-size: 1.05rem;
+            border-radius: 10px;
+            transition: 0.15s;
+            font-weight: 900;
+            text-align: left;
+        }
+
+        .option-btn:hover {
+            background: #3e2712;
+            color: #f4e4bc;
+            transform: translateY(-1px);
+        }
+
+        .option-btn:active {
+            transform: scale(0.99);
+        }
+
+        .hud-top {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            font-weight: 900;
+            opacity: 0.9;
+            flex-wrap: wrap;
+            margin-top: 4px;
+        }
+
+        .progress-bar {
+            height: 10px;
+            width: 100%;
+            border-radius: 999px;
+            background: rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+            box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.12);
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            transition: width 0.25s ease;
+            background: linear-gradient(90deg, #8e44ad, #f1c40f);
+        }
+
+        #feedback {
+            margin-top: 8px;
+            font-weight: 900;
+            text-align: center;
+        }
+
+        .smalltip {
+            opacity: 0.85;
+            font-weight: 800;
+            text-align: center;
+            margin: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="parchment arena">
+
+        <div class="boss-area">
+            <h2 style="margin-bottom:4px;">🐉 El Guardián del Lenguaje</h2>
+            <p class="smalltip">Derrota al Guardián respondiendo correctamente.</p>
+
+            <div class="bars">
+                <div class="bar-row">
+                    <span>HP del Guardián</span>
+                    <span id="bossHpText">100 / 100</span>
+                </div>
+                <div class="hp-bar">
+                    <div id="boss-fill" class="hp-fill"></div>
+                </div>
+
+                <div class="bar-row">
+                    <span>Tu HP</span>
+                    <span id="playerHpText">100 / 100</span>
+                </div>
+                <div class="hp-bar">
+                    <div id="player-fill" class="hp-fill"></div>
+                </div>
+            </div>
+
+            <div class="hud-top">
+                <span id="qCount">Pregunta 1 / 10</span>
+                <span>Regla: Respuesta incorrecta → El Guardián ataca ⚔️</span>
+            </div>
+
+            <div class="progress-bar">
+                <div class="progress-fill" id="progFill"></div>
+            </div>
+        </div>
+
+        <div id="teach-box" class="teaching-box"></div>
+
+        <div id="quiz-ui">
+            <p id="question-text" style="font-weight:900;"></p>
+            <div id="options" class="quiz-container"></div>
+        </div>
+
+        <p id="feedback"></p>
+    </div>
+
+    <script>
+        const LESSONS = [
+            {
+                teach: "“Yo soy estudiante”\nSignifica: I am a student.\n- “Yo” = I\n- “soy” = I am (ser)\nUsa “soy” para identidad.",
+                question: "¿Qué significa 'Yo soy estudiante'?",
+                options: ["I am a student", "You are a student", "I study sometimes", "They are students"],
+                answer: "I am a student"
+            },
+            {
+                teach: "“Tú eres mi amigo”\nSignifica: You are my friend.\n- “Tú” = you\n- “eres” = you are (ser)",
+                question: "¿Qué significa 'Tú eres mi amigo'?",
+                options: ["You are my friend", "I am your friend", "He is my friend", "We are friends"],
+                answer: "You are my friend"
+            },
+            {
+                teach: "“Ella tiene un perro”\nSignifica: She has a dog.\n- “Ella” = she\n- “tiene” = has (tener)",
+                question: "¿Qué tiene ella?",
+                options: ["A dog", "A cat", "A house", "A book"],
+                answer: "A dog"
+            },
+            {
+                teach: "“Nosotros comemos pan”\nSignifica: We eat bread.\n- “Nosotros” = we\n- “comemos” = we eat",
+                question: "¿Qué comemos?",
+                options: ["Bread", "Rice", "Apple", "Nothing"],
+                answer: "Bread"
+            },
+            {
+                teach: "“Yo quiero agua”\nSignifica: I want water.\n- “quiero” = I want (querer)",
+                question: "¿Qué quiere la persona?",
+                options: ["Water", "Juice", "Food", "Money"],
+                answer: "Water"
+            },
+            {
+                teach: "“¿Dónde está el libro?”\nSignifica: Where is the book?\n- “Dónde” = where\n- “está” = is",
+                question: "¿Qué pregunta esta frase?",
+                options: ["Where is the book?", "What is the book?", "Whose book is it?", "How is the book?"],
+                answer: "Where is the book?"
+            },
+            {
+                teach: "“Hace frío”\nSignifica: It is cold.\nExpresión del clima.",
+                question: "¿Qué describe 'Hace frío'?",
+                options: ["The weather is cold", "I am cold", "She is cold", "The room is cold"],
+                answer: "The weather is cold"
+            },
+            {
+                teach: "“Estoy cansado”\nSignifica: I am tired.\n- “Estoy” = I am (estado temporal)",
+                question: "¿Cómo se siente la persona?",
+                options: ["Tired", "Happy", "Angry", "Hungry"],
+                answer: "Tired"
+            },
+            {
+                teach: "“Me gusta la música”\nSignifica: I like music.\n- “Me gusta” = I like",
+                question: "¿Qué le gusta?",
+                options: ["Music", "Dance", "Cooking", "Travel"],
+                answer: "Music"
+            },
+            {
+                teach: "“Yo vivo en España”\nSignifica: I live in Spain.",
+                question: "¿Dónde vive la persona?",
+                options: ["Spain", "India", "Mexico", "France"],
+                answer: "Spain"
+            }
+        ];
+
+        let qIndex = 0;
+        let bossHP = 100;
+        let playerHP = 100;
+
+        const teachBox = document.getElementById("teach-box");
+        const optionsDiv = document.getElementById("options");
+        const questionText = document.getElementById("question-text");
+        const feedback = document.getElementById("feedback");
+
+        const bossFill = document.getElementById("boss-fill");
+        const playerFill = document.getElementById("player-fill");
+        const bossHpText = document.getElementById("bossHpText");
+        const playerHpText = document.getElementById("playerHpText");
+        const qCount = document.getElementById("qCount");
+        const progFill = document.getElementById("progFill");
+
+        function shuffle(arr) {
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        const QUESTIONS = LESSONS.map(l => ({
+            teach: l.teach,
+            question: l.question,
+            answer: l.answer,
+            options: shuffle([...l.options])
+        }));
+
+        function updateBars() {
+            bossFill.style.width = bossHP + "%";
+            playerFill.style.width = playerHP + "%";
+            bossHpText.innerText = `${bossHP} / 100`;
+            playerHpText.innerText = `${playerHP} / 100`;
+        }
+
+        function updateProgress() {
+            qCount.innerText = `Pregunta ${Math.min(qIndex + 1, QUESTIONS.length)} / ${QUESTIONS.length}`;
+            progFill.style.width = Math.round((qIndex / QUESTIONS.length) * 100) + "%";
+        }
+
+        function loadQuestion() {
+            if (qIndex >= QUESTIONS.length) {
+                winGame();
+                return;
+            }
+
+            const q = QUESTIONS[qIndex];
+            teachBox.innerText = q.teach;
+            questionText.innerText = q.question;
+            optionsDiv.innerHTML = "";
+            feedback.innerText = "";
+            updateProgress();
+
+            q.options.forEach(opt => {
+                const btn = document.createElement("button");
+                btn.className = "option-btn";
+                btn.innerText = opt;
+                btn.onclick = () => checkAnswer(opt);
+                optionsDiv.appendChild(btn);
+            });
+        }
+
+        function lockOptions(lock = true) {
+            const btns = document.querySelectorAll(".option-btn");
+            btns.forEach(b => b.disabled = lock);
+            btns.forEach(b => b.style.opacity = lock ? "0.7" : "1");
+        }
+
+        function checkAnswer(selected) {
+            const q = QUESTIONS[qIndex];
+            lockOptions(true);
+
+            if (selected === q.answer) {
+                bossHP = Math.max(0, bossHP - 10);
+                feedback.style.color = "green";
+                feedback.innerText = "¡Acierto! El Guardián recibe daño 💥";
+                updateBars();
+                qIndex++;
+                setTimeout(() => {
+                    lockOptions(false);
+                    loadQuestion();
+                }, 800);
+            } else {
+                playerHP = Math.max(0, playerHP - 12);
+                feedback.style.color = "#e74c3c";
+                feedback.innerText = `Incorrecto. Respuesta correcta: ${q.answer}`;
+                updateBars();
+                if (playerHP <= 0) {
+                    loseGame();
+                    return;
+                }
+                setTimeout(() => lockOptions(false), 800);
+            }
+
+            if (bossHP <= 0) winGame();
+        }
+
+        function winGame() {
+            progFill.style.width = "100%";
+            feedback.style.color = "green";
+            feedback.innerText = "🏆 ¡Has completado la Gran Prueba!";
+
+            localStorage.setItem("s5Complete", "1");
+
+            setTimeout(() => {
+                location.href = "spanish-level.html";
+            }, 1500);
+        }
+
+        function loseGame() {
+            feedback.style.color = "#e74c3c";
+            feedback.innerText = "💀 Has sido derrotado. Inténtalo de nuevo.";
+
+            setTimeout(() => {
+                location.href = "spanish-level.html";
+            }, 1800);
+        }
+
+        updateBars();
+        loadQuestion();
+    </script>
+
+</body>
+
+</html>
+
+
