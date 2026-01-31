@@ -16,24 +16,45 @@ body {
 .quest-page {
     background-image: url('../assets/bg2.jpg');
     background-size: cover;
-    background-position: 49% 30%;
-    /* Nudged left (49%) to center board, and up (30%) to show title */
+    background-position: center top;
     min-height: 100vh;
     width: 100%;
     position: relative;
+}
+
+.board-wrapper {
+    position: absolute;
+    top: 14%;
+    /* 👈 move this up/down to align with board */
+    left: 48%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 900px;
+
     display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    /* Changed from center to allow custom top positioning */
-    padding-top: 10vh;
-    /* Push down to match the background board */
-    padding-bottom: 20px;
-    box-sizing: border-box;
+    flex-direction: column;
+    gap: 30px;
+}
+
+
+.highlighted-quest-box {
+    padding: 18px 32px;
+}
+
+.quest-stack {
+    width: 100%;
+    /* keep responsive */
+    max-width: 900px;
+    margin-left: 90px;
+    /* ⬅️ increase from ~700 / 550 */
+    display: flex;
+    flex-direction: column;
+    gap: 26px;
 }
 
 .container {
     width: 100%;
-    max-width: 550px;
+    max-width: 900px;
     /* Reduced from 900px to fit inside the background posts */
     display: flex;
     flex-direction: column;
@@ -66,7 +87,7 @@ body {
 }
 
 .board-title {
-    font-family: "UnifrakturCook", cursive;
+    font-family: cursive;
     font-weight: 700;
     font-style: normal;
     background: linear-gradient(90deg,
@@ -99,18 +120,20 @@ body {
 }
 
 .quest-item {
-    background: rgba(244, 228, 188, 0.85);
-    /* Increased opacity for readability */
+    background: rgba(244, 228, 188, 0.9);
     border: 3px solid #3e2712;
-    padding: 25px 30px;
+
+    padding: 30px 40px;
+    /* ⬅️ MORE HEIGHT + WIDTH */
+
     display: flex;
     justify-content: space-between;
     align-items: center;
+
     box-shadow: 8px 8px 0px rgba(0, 0, 0, 0.3);
-    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    cursor: pointer;
-    border-radius: 8px;
-    gap: 20px;
+    border-radius: 10px;
+
+    gap: 24px;
 }
 
 .quest-item:hover {
@@ -147,6 +170,10 @@ body {
 }
 
 .select-btn {
+    padding: 14px 34px;
+    /* ⬅️ slightly bigger */
+    font-size: 1.05rem;
+    border-radius: 8px;
     padding: 12px 28px;
     font-size: 1rem;
     background: #3e2712;
@@ -218,5 +245,107 @@ body {
 
     .select-btn {
         width: 100%;
+    }
+}
+
+i img {
+    image-rendering: pixelated;
+}
+
+.pixel-cloud {
+    position: absolute;
+    width: 500px;
+    /* FORCE SIZE */
+    height: auto;
+    image-rendering: pixelated;
+    opacity: 0.85;
+    animation: floatClouds linear infinite;
+}
+
+.pixel-clouds {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: -1;
+}
+
+.cloud-1 {
+    animation-duration: 90s;
+}
+
+.cloud-3 {
+    animation-duration: 40s;
+}
+
+.c1 {
+    top: 12%;
+    left: -40%;
+    animation-delay: -5s;
+    opacity: 0.9;
+    transform: scale(0.8);
+}
+
+.c2 {
+    top: 25%;
+    left: 110%;
+    animation-delay: -15s;
+    opacity: 0.7;
+    transform: scale(0.75);
+}
+
+.c3 {
+    top: 38%;
+    left: -60%;
+    animation-delay: -25s;
+    opacity: 0.85;
+    transform: scale(0.9);
+}
+
+.c4 {
+    top: 55%;
+    left: 120%;
+    animation-delay: -35s;
+    opacity: 0.6;
+    transform: scale(1.1);
+}
+
+.c5 {
+    top: 72%;
+    left: -80%;
+    animation-delay: -50s;
+    opacity: 0.5;
+    transform: scale(1.25);
+}
+
+
+.right {
+    animation-name: floatRight;
+}
+
+.left {
+    animation-name: floatLeft;
+}
+
+@keyframes floatRight {
+    from {
+        transform: translateX(0);
+    }
+
+    to {
+        transform: translateX(140vw);
+    }
+}
+
+@keyframes floatLeft {
+    from {
+        transform: translateX(0);
+    }
+
+    to {
+        transform: translateX(-140vw);
     }
 }

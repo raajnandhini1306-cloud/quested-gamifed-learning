@@ -161,3 +161,104 @@ h2 {
         margin-left: 0;
     }
 }
+
+img {
+    image-rendering: pixelated;
+}
+
+.pixel-cloud {
+    position: absolute;
+    width: 500px;
+    /* FORCE SIZE */
+    height: auto;
+    image-rendering: pixelated;
+    opacity: 0.85;
+    animation: floatClouds linear infinite;
+}
+
+.pixel-clouds {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: -1;
+}
+
+.cloud-1 {
+    animation-duration: 90s;
+}
+
+.cloud-3 {
+    animation-duration: 40s;
+}
+
+.c1 {
+    top: 12%;
+    left: -40%;
+    animation-delay: -5s;
+    opacity: 0.9;
+    transform: scale(0.8);
+}
+
+.c2 {
+    top: 25%;
+    left: 110%;
+    animation-delay: -15s;
+    opacity: 0.7;
+    transform: scale(0.75);
+}
+
+.c3 {
+    top: 38%;
+    left: -60%;
+    animation-delay: -25s;
+    opacity: 0.85;
+    transform: scale(0.9);
+}
+
+.c4 {
+    top: 55%;
+    left: 120%;
+    animation-delay: -35s;
+    opacity: 0.6;
+    transform: scale(1.1);
+}
+
+.c5 {
+    top: 72%;
+    left: -80%;
+    animation-delay: -50s;
+    opacity: 0.5;
+    transform: scale(1.25);
+}
+
+.right {
+    animation-name: floatRight;
+}
+
+.left {
+    animation-name: floatLeft;
+}
+
+@keyframes floatRight {
+    from {
+        transform: translateX(0);
+    }
+
+    to {
+        transform: translateX(140vw);
+    }
+}
+
+@keyframes floatLeft {
+    from {
+        transform: translateX(0);
+    }
+
+    to {
+        transform: translateX(-140vw);
+    }
+}

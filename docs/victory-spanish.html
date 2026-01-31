@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Academia de Español – Graduación</title>
-    <link rel="stylesheet" href="quest-style.css">
+    <link rel="stylesheet" href="css/quest-style.css">
     <style>
         body {
             background-image: url(bg4.jpg);
@@ -37,8 +37,13 @@
         }
 
         @keyframes shimmer {
-            0% { background-position: 0% }
-            100% { background-position: 200% }
+            0% {
+                background-position: 0%
+            }
+
+            100% {
+                background-position: 200%
+            }
         }
 
         .badge-row {
@@ -62,18 +67,44 @@
         }
 
         @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-20px); }
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-20px);
+            }
         }
 
         @keyframes unfold {
-            0% { transform: scaleY(0); opacity: 0; }
-            100% { transform: scaleY(1); opacity: 1; }
+            0% {
+                transform: scaleY(0);
+                opacity: 0;
+            }
+
+            100% {
+                transform: scaleY(1);
+                opacity: 1;
+            }
         }
     </style>
 </head>
 
 <body>
+    <div class="pixel-clouds">
+
+        <!-- Small clouds -->
+        <img src="assets/cloud3.png" class="pixel-cloud cloud-1 right c1">
+        <img src="assets/cloud3.png" class="pixel-cloud cloud-1 left c2">
+        <img src="assets/cloud3.png" class="pixel-cloud cloud-1 right c3">
+
+        <!-- Large clouds -->
+        <img src="assets/cloud3.png" class="pixel-cloud cloud-3 left c4">
+        <img src="assets/cloud3.png" class="pixel-cloud cloud-3 right c5">
+
+    </div>
 
     <div class="victory-card">
         <div class="trophy">🎓</div>
@@ -84,8 +115,8 @@
             <h2>¡Graduación Completa!</h2>
 
             <p>
-                Has superado las 5 Grandes Misiones del Español.  
-                Tu vocabulario es fuerte, tus verbos son precisos…  
+                Has superado las 5 Grandes Misiones del Español.
+                Tu vocabulario es fuerte, tus verbos son precisos…
                 y el idioma ahora responde a tu llamado.
             </p>
 
