@@ -9,28 +9,29 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <title>QuestEd | Python Map</title>
-    <link rel="stylesheet" href="css/python-level.css">
+    <link rel="stylesheet" href="../../css/python-level.css">
 </head>
+
 
 <body>
     <div class="pixel-clouds">
 
         <!-- Small clouds -->
-        <img src="assets/cloud3.png" class="pixel-cloud cloud-1 right c1">
-        <img src="assets/cloud3.png" class="pixel-cloud cloud-1 left c2">
-        <img src="assets/cloud3.png" class="pixel-cloud cloud-1 right c3">
+        <img src="../../assets/cloud3.png" class="pixel-cloud cloud-1 right c1">
+        <img src="../../assets/cloud3.png" class="pixel-cloud cloud-1 left c2">
+        <img src="../../assets/cloud3.png" class="pixel-cloud cloud-1 right c3">
+        <img src="../../assets/cloud3.png" class="pixel-cloud cloud-3 left c4">
+        <img src="../../assets/cloud3.png" class="pixel-cloud cloud-3 right c5">
 
-        <!-- Large clouds -->
-        <img src="assets/cloud3.png" class="pixel-cloud cloud-3 left c4">
-        <img src="assets/cloud3.png" class="pixel-cloud cloud-3 right c5">
 
     </div>
 
     <nav class="game-nav">
-        <a href="skillselection.html" class="nav-btn" style="text-decoration:none;">🏠 Home</a>
+        <a href="../../hub/skillselection.html" class="nav-btn" style="text-decoration:none;">🏠 Home</a>
         <a href="#" class="nav-btn active" style="text-decoration:none; pointer-events: none;">🗺️ Map</a>
-        <a href="profile.html" class="nav-btn" style="text-decoration:none;">👤 Profile</a>
+        <a href="../../hub/profile.html" class="nav-btn" style="text-decoration:none;">👤 Profile</a>
     </nav>
+
 
     <div class="full-screen-map">
 
@@ -73,11 +74,12 @@
 
     </div>
 
-    <script src="js/auth.js"></script>
+    <script src="../../js/auth.js"></script>
     <script>
         console.log("📍 Python Level Page Loaded");
 
-        checkAuth();
+        checkAuth('../../auth/login.html');
+
 
         const q1Done = localStorage.getItem("q1Complete") === "1";
 
@@ -139,11 +141,38 @@
         if (q4Done) markCompleted(lvl4);
         if (q5Done) markCompleted(lvl5);
 
-        //  Unlock order:
-        if (q1Done) unlockWithAnim(lvl2); else lock(lvl2);
-        if (q2Done) unlockWithAnim(lvl3); else lock(lvl3);
-        if (q3Done) unlockWithAnim(lvl4); else lock(lvl4);
-        if (q4Done) unlockWithAnim(lvl5); else lock(lvl5);
+
+        // Guest mode check
+        function checkGuestAccess(nextLevelEl) {
+            if (isGuest()) {
+                // If guest, do NOT unlock the next level, but create a special restricted handler
+                nextLevelEl.classList.add("locked");
+                nextLevelEl.onclick = () => {
+                    const confirmSignup = confirm("🔒 Trial Complete!\n\nGuest Mode only allows the first level.\n\nWould you like to sign up to unlock the full adventure?");
+                    if (confirmSignup) {
+                        location.href = "../../auth/signup.html";
+                    }
+                };
+                return true; // We handled it as guest restriction
+            }
+            return false;
+        }
+
+        //  Unlock order logic with Guest Check:
+        if (q1Done) {
+            if (!checkGuestAccess(lvl2)) {
+                unlockWithAnim(lvl2);
+            }
+        } else {
+            lock(lvl2);
+        }
+
+        // For higher levels, guests are blocked implicitly because they can't pass lvl 1 limit, 
+        // but just in case they hacked q1Done:
+        if (q2Done && !isGuest()) unlockWithAnim(lvl3); else lock(lvl3);
+        if (q3Done && !isGuest()) unlockWithAnim(lvl4); else lock(lvl4);
+        if (q4Done && !isGuest()) unlockWithAnim(lvl5); else lock(lvl5);
+
 
         // Set CURRENT level as first incomplete
         function setCurrentLevel() {

@@ -1,0 +1,95 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Choose your learning path in QuestEd. Select from Python, Spanish, and more to begin your gamified journey.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <title>QuestEd | Choose Path</title>
+    <link rel="stylesheet" href="../css/skillselection.css">
+
+</head>
+
+<body>
+
+    <!-- 🌤️ CLOUD LAYER -->
+    <div class="pixel-clouds">
+        <img src="../assets/cloud3.png" class="pixel-cloud cloud-1 right c1">
+        <img src="../assets/cloud3.png" class="pixel-cloud cloud-1 left c2">
+        <img src="../assets/cloud3.png" class="pixel-cloud cloud-1 right c3">
+        <img src="../assets/cloud3.png" class="pixel-cloud cloud-3 left c4">
+        <img src="../assets/cloud3.png" class="pixel-cloud cloud-3 right c5">
+
+    </div>
+
+    <!-- 🌲 BACKGROUND PAGE -->
+    <div class="quest-page">
+
+        <!-- TOP RIGHT ACTIONS -->
+        <div class="top-actions">
+            <a href="profile.html" class="action-btn">👤 Profile</a>
+            <button onclick="logout('../auth/login.html')" class="action-btn">🚪 Logout</button>
+
+        </div>
+
+        <!-- 🪵 BOARD-ALIGNED CONTENT -->
+        <div class="board-wrapper">
+
+            <div class="highlighted-quest-box">
+                <h1 class="board-title">CHOOSE YOUR PATH</h1>
+
+            </div>
+            <div id="guestBanner"
+                style="background:#e67e22; color:white; padding:10px; border-radius:8px; text-align:center; display:none; margin-bottom:10px; font-weight:bold;">
+                Guest Mode: Progress not saved. Sign up to save!
+            </div>
+
+
+            <div class="quest-stack">
+
+                <!-- PYTHON -->
+                <div class="quest-item" onclick="location.href='../tracks/python/python-level.html'">
+                    <div class="info">
+                        <h3>The Python Path</h3>
+                        <p>Master the art of logic and build your own digital world.</p>
+                    </div>
+                    <button class="select-btn"
+                        onclick="event.stopPropagation(); location.href='../tracks/python/python-level.html'">
+
+                        Enter
+                    </button>
+                </div>
+
+                <!-- SPANISH (LOCKED) -->
+                <!-- SPANISH -->
+                <div class="quest-item" onclick="location.href='../tracks/spanish/spanish-level.html'">
+                    <div class="info">
+                        <h3>The Spanish Path</h3>
+                        <p>Master the tongue of far-away lands.</p>
+                    </div>
+                    <button class="select-btn"
+                        onclick="event.stopPropagation(); location.href='../tracks/spanish/spanish-level.html'">Enter</button>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+
+    <!-- AUTH -->
+    <script src="../js/auth.js"></script>
+    <script>
+        checkAuth('../auth/login.html');
+        if (isGuest()) {
+            document.getElementById("guestBanner").style.display = "block";
+        }
+    </script>
+
+
+
+</body>
+
+
+</html>

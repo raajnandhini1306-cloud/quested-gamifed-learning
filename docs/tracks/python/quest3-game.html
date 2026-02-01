@@ -1,10 +1,10 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <title>Level 3: The Automated Alchemist</title>
-    <link rel="stylesheet" href="css/quest-style.css">
+    <link rel="stylesheet" href="../../css/quest-style.css">
 
     <style>
         .cauldron-area {
@@ -174,7 +174,7 @@
             <div class="hud-top">
                 <span id="exerciseText">Exercise: 1 / 3</span>
                 <span id="stepText">Step: 0 / 0</span>
-                <span>Rule: Lead → Gold ✨</span>
+                <span>Rule: Lead â†’ Gold âœ¨</span>
             </div>
             <div class="progress-bar">
                 <div class="progress-fill" id="progressFill"></div>
@@ -205,7 +205,7 @@
 
                 <!-- appears after each exercise complete -->
                 <button class="btn-small next" id="nextExerciseBtn" onclick="startNextExercise()">Next Exercise
-                    ➜</button>
+                    âžœ</button>
             </div>
 
             <p style="opacity:0.85; margin-top:10px; font-weight:800;">
@@ -214,6 +214,9 @@
         </div>
 
         <p id="feedback"></p>
+        <div class="btn-row">
+            <button class="game-btn btn-secondary" onclick="location.href='python-level.html'">Back to Map</button>
+        </div>
     </div>
 
     <script>
@@ -263,7 +266,7 @@
             highlightCurrent();
 
             feedback.style.color = "#333";
-            feedback.innerText = "Press Next Iteration to begin ⚙️";
+            feedback.innerText = "Press Next Iteration to begin âš™ï¸";
         }
 
         function updateInventoryText() {
@@ -337,17 +340,17 @@
                 domBeltItems[currentIndex + items.length].style.background = "#ffd700";
 
                 feedback.style.color = "green";
-                feedback.innerText = "✨ Correct! Lead became Gold.";
+                feedback.innerText = "âœ¨ Correct! Lead became Gold.";
                 currentIndex++;
             }
             else if (current !== "Lead" && !transmute) {
                 feedback.style.color = "green";
-                feedback.innerText = "⏩ Good! Non-lead item skipped.";
+                feedback.innerText = "â© Good! Non-lead item skipped.";
                 currentIndex++;
             }
             else {
                 feedback.style.color = "red";
-                feedback.innerText = "❌ Wrong choice! Only Lead → Transmute. Others → Skip.";
+                feedback.innerText = "âŒ Wrong choice! Only Lead â†’ Transmute. Others â†’ Skip.";
                 return;
             }
 
@@ -364,7 +367,7 @@
             belt.classList.add("paused");
 
             feedback.style.color = "green";
-            feedback.innerText = `🏆 Exercise ${exerciseIndex + 1} complete!`;
+            feedback.innerText = `ðŸ† Exercise ${exerciseIndex + 1} complete!`;
 
             // show next exercise button if not last
             if (exerciseIndex < EXERCISES.length - 1) {
@@ -372,7 +375,7 @@
             } else {
                 // last exercise complete => quest complete
                 localStorage.setItem("q3Complete", "1");
-                feedback.innerText = "🏆 Level 3 Complete! Returning to map...";
+                feedback.innerText = "ðŸ† Level 3 Complete! Returning to map...";
                 setTimeout(() => location.href = "python-level.html", 1500);
             }
         }

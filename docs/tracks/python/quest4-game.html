@@ -1,10 +1,10 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <title>Level 4: Functions Mastery</title>
-    <link rel="stylesheet" href="css/quest-style.css">
+    <link rel="stylesheet" href="../../css/quest-style.css">
 
     <style>
         .forge-area {
@@ -192,7 +192,7 @@
 
             <div class="btn-row">
                 <button class="btn btn-test" onclick="testForge()">Run Tests</button>
-                <button class="btn btn-next" id="nextBtn" onclick="nextRound()">Next Exercise ➜</button>
+                <button class="btn btn-next" id="nextBtn" onclick="nextRound()">Next Exercise âžœ</button>
                 <button class="btn btn-reset" onclick="resetInput()">Reset</button>
             </div>
 
@@ -201,6 +201,9 @@
             </div>
 
             <p id="feedback"></p>
+            <div class="btn-row">
+                <button class="game-btn btn-secondary" onclick="location.href='python-level.html'">Back to Map</button>
+            </div>
         </div>
     </div>
 
@@ -370,7 +373,7 @@ def power(base, exp=2):
 
             if (isCorrect) {
                 feedback.style.color = "green";
-                feedback.innerText = "✨ Correct! Running tests...";
+                feedback.innerText = "âœ¨ Correct! Running tests...";
 
                 setCrystalsDefault();
 
@@ -382,7 +385,7 @@ def power(base, exp=2):
                 });
 
                 setTimeout(() => {
-                    feedback.innerText = "🏆 All tests passed! Next exercise unlocked.";
+                    feedback.innerText = "ðŸ† All tests passed! Next exercise unlocked.";
                     nextBtn.style.display = "inline-block";
                     progressFill.style.width = Math.round(((round + 1) / ROUNDS.length) * 100) + "%";
                 }, 2600);
@@ -390,11 +393,11 @@ def power(base, exp=2):
             } else {
                 feedback.style.color = "red";
                 if (round === 1) {
-                    feedback.innerText = '❌ Try: print("Hello", name)';
+                    feedback.innerText = 'âŒ Try: print("Hello", name)';
                 } else if (round === 2) {
-                    feedback.innerText = "❌ Try using: base ** exp";
+                    feedback.innerText = "âŒ Try using: base ** exp";
                 } else {
-                    feedback.innerText = "❌ Try using: a + b";
+                    feedback.innerText = "âŒ Try using: a + b";
                 }
             }
         }
@@ -406,7 +409,7 @@ def power(base, exp=2):
             } else {
                 localStorage.setItem("q4Complete", "1");
                 feedback.style.color = "green";
-                feedback.innerText = "🏆 Quest 4 Complete! Returning to map...";
+                feedback.innerText = "ðŸ† Quest 4 Complete! Returning to map...";
                 progressFill.style.width = "100%";
                 setTimeout(() => location.href = "python-level.html", 1500);
             }

@@ -7,7 +7,7 @@ function showMsg(text, ok = true) {
     box.className = "msg " + (ok ? "ok" : "err");
     box.style.display = "block";
     box.innerText = text;
-    
+
 }
 
 function fillDemo() {
@@ -25,6 +25,8 @@ function fillDemo() {
 
     showMsg("✅ Loaded saved account email. Type your password.", true);
 }
+
+// Auth Redirects tailored for "docs/auth" -> "docs/hub" structure
 
 function login(e) {
     e.preventDefault();
@@ -70,7 +72,8 @@ function login(e) {
     }
 
     showMsg("✅ Logged in! Loading skill selection...", true);
-    setTimeout(() => location.href = "skillselection.html", 700);
+    // Redirect to Hub
+    setTimeout(() => location.href = "../hub/skillselection.html", 700);
 }
 
 function clearForm() {
@@ -121,14 +124,32 @@ function signup(e) {
     showMsg("✅ Account created! Heading to Character Creation...", true);
 
     setTimeout(() => {
-        location.href = "avatar-selection.html";
+        // Redirect to Hub -> Avatar
+        location.href = "../hub/avatar-selection.html";
     }, 900);
 }
 
-function checkAuth() {
-    if (localStorage.getItem("isLoggedIn") !== "1") {
-        location.href = "login.html";
+function checkAuth(loginPath = "login.html") {
+    const status = localStorage.getItem("isLoggedIn");
+    if (status !== "1" && status !== "guest") {
+        location.href = loginPath;
     }
+}
+
+function isGuest() {
+    return localStorage.getItem("isLoggedIn") === "guest";
+}
+
+function startGuestSession(redirectPath) {
+    localStorage.setItem("isLoggedIn", "guest");
+    localStorage.setItem("playerName", "Guest Adventurer");
+    // Optional: Clear previous progress to ensure a fresh trial?
+    // localStorage.clear(); // No, might wipe other stuff. keeping as is.
+
+    showMsg("✨ Starting Guest Session...", true);
+    setTimeout(() => {
+        location.href = redirectPath;
+    }, 500);
 }
 
 function forgotPassword() {
@@ -142,9 +163,9 @@ function forgotPassword() {
     }
 }
 
-function logout() {
+function logout(loginPath = "login.html") {
     localStorage.removeItem("isLoggedIn");
-    location.href = "login.html";
+    location.href = loginPath;
 }
 
 // Auto-fill remembered email on load

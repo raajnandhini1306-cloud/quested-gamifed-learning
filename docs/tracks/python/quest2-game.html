@@ -1,10 +1,10 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8" />
     <title>Level 2: Data Type Match-Up</title>
-    <link rel="stylesheet" href="css/quest-style.css" />
+    <link rel="stylesheet" href="../../css/quest-style.css" />
 
     <style>
         .match-container {
@@ -130,7 +130,7 @@
         <div class="hud">
             <div class="hud-top">
                 <span id="matchedText">Matched: 0 / 0</span>
-                <span id="tipText">Tip: Quotes = string ✅</span>
+                <span id="tipText">Tip: Quotes = string âœ…</span>
             </div>
             <div class="progress-bar">
                 <div class="progress-fill" id="progressFill"></div>
@@ -143,6 +143,9 @@
         </div>
 
         <p id="feedback"></p>
+        <div class="btn-row">
+            <button class="game-btn btn-secondary" onclick="location.href='python-level.html'">Back to Map</button>
+        </div>
     </div>
 
     <script>
@@ -211,7 +214,7 @@
 
             matched = 0;
             updateProgress();
-            setFeedback("Start matching! ⚡", true);
+            setFeedback("Start matching! âš¡", true);
 
             const valuesList = PAIRS.map((p, idx) => ({ txt: p.value, id: idx + 1 }));
             const typesList = PAIRS.map((p, idx) => ({ txt: p.type, id: idx + 1 }));
@@ -238,7 +241,7 @@
             resetSelection();
             selectedValue = el;
             el.classList.add("selected");
-            setFeedback("Now choose its data type 👉", true);
+            setFeedback("Now choose its data type ðŸ‘‰", true);
         }
 
         function selectAType(el) {
@@ -259,18 +262,18 @@
                 matched++;
                 updateProgress();
 
-                setFeedback("✨ Correct Match!", true);
+                setFeedback("âœ¨ Correct Match!", true);
                 resetSelection();
 
                 if (matched === total) {
-                    setFeedback("🏆 All Matched! Returning to map...", true);
+                    setFeedback("ðŸ† All Matched! Returning to map...", true);
 
                     localStorage.setItem("q2Complete", "1");
 
                     setTimeout(() => { location.href = "python-level.html"; }, 1500);
                 }
             } else {
-                setFeedback("❌ Wrong match! Try again.", false);
+                setFeedback("âŒ Wrong match! Try again.", false);
 
                 selectedValue.classList.add("shake");
                 el.classList.add("shake");

@@ -6,9 +6,10 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    min-height: 100vh;
     margin: 0;
     font-family: 'Macondo', cursive;
+    padding: 40px 20px;
 }
 
 .scroll-container {
@@ -62,7 +63,16 @@ body {
 
 * {
     transition: transform 0.25s ease, box-shadow 0.25s ease, filter 0.25s ease, opacity 0.25s ease;
+    box-sizing: border-box;
 }
+
+input,
+button,
+textarea,
+select {
+    font-family: 'Macondo', cursive;
+}
+
 
 .parchment {
     animation: parchmentFloat 3.8s ease-in-out infinite;
@@ -385,3 +395,153 @@ img {
         transform: translateX(-140vw);
     }
 }
+
+.adventure-btn {
+    margin-top: 16px;
+    padding: 12px 22px;
+    border-radius: 30px;
+    border: 2px solid #3e2712;
+    font-size: 1rem;
+    font-family: 'Macondo', cursive;
+    cursor: pointer;
+    transition: 0.3s;
+    display: inline-block;
+}
+
+.adventure-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.adventure-btn.primary {
+    background: #3e2712;
+    color: #f1c40f;
+}
+
+.adventure-btn.secondary {
+    background: #f1c40f;
+    color: #3e2712;
+}
+/* Shared Game Button Styles */
+.btn-row {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 16px;
+}
+
+.game-btn {
+    cursor: pointer;
+    border: none;
+    border-radius: 12px;
+    padding: 10px 14px;
+    font-weight: 800;
+    transition: transform 0.08s ease, opacity 0.2s ease;
+    font-family: 'Macondo', cursive;
+    font-size: 1rem;
+}
+
+.game-btn:active {
+    transform: scale(0.98);
+}
+
+.game-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.btn-primary {
+    background: #3e2712;
+    color: #f1c40f;
+    border: 2px solid #f1c40f; 
+}
+
+.btn-secondary {
+    background: #f1c40f;
+    color: #3e2712;
+    border: 2px solid #3e2712;
+}
+
+.btn-ghost {
+    background: transparent;
+    color: #3e2712;
+    text-decoration: underline;
+}
+
+
+/* Global HUD Styles */
+.hud {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin: 10px 0 18px;
+    width: 100%;
+}
+
+.task-chip {
+    font-weight: 800;
+    padding: 8px 12px;
+    border-radius: 999px;
+    background: rgba(0, 0, 0, 0.08);
+}
+
+.progress-wrap {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.progress-text {
+    font-size: 14px;
+    opacity: 0.9;
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    font-weight: bold;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 12px;
+    border-radius: 999px;
+    overflow: hidden;
+    background: rgba(0, 0, 0, 0.15);
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.12);
+}
+
+.progress-fill {
+    height: 100%;
+    width: 0%;
+    transition: width 0.3s ease;
+    background: linear-gradient(90deg, #16a34a, #22c55e); /* Python Green by Default */
+}
+
+/* Quest Input Box */
+.quest-input-box {
+    width: 100%;
+    padding: 14px;
+    font-size: 18px;
+    margin-top: 20px;
+    border: 2px solid #3e2712;
+    border-radius: 12px;
+    background: #fffdf4;
+    font-family: 'Macondo', cursive;
+    outline: none;
+    transition: 0.3s;
+}
+
+.quest-input-box:focus {
+    border-color: #f1c40f;
+    box-shadow: 0 0 0 3px rgba(241, 196, 15, 0.25);
+}
+
+.feedback {
+    margin-top: 14px;
+    font-weight: 900;
+    font-size: 1.1rem;
+    min-height: 24px;
+}
+

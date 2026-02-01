@@ -3,11 +3,12 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Academy Graduation</title>
-    <link rel="stylesheet" href="css/quest-style.css">
+    <title>Academia de Español – Graduación</title>
+    <link rel="stylesheet" href="../../css/quest-style.css">
     <style>
         body {
-            background-image: url(assets/bg4.jpg);
+            background-image: url(../../assets/bg4.jpg);
+
             background-size: cover;
             background-blend-mode: overlay;
             overflow: hidden;
@@ -33,8 +34,19 @@
             -webkit-background-clip: text;
             background-clip: text;
             -webkit-text-fill-color: transparent;
+
             animation: shimmer 3s linear infinite;
             margin: 10px 0;
+        }
+
+        @keyframes shimmer {
+            0% {
+                background-position: 0%
+            }
+
+            100% {
+                background-position: 200%
+            }
         }
 
         .badge-row {
@@ -87,44 +99,62 @@
     <div class="pixel-clouds">
 
         <!-- Small clouds -->
-        <img src="assets/cloud3.png" class="pixel-cloud cloud-1 right c1">
-        <img src="assets/cloud3.png" class="pixel-cloud cloud-1 left c2">
-        <img src="assets/cloud3.png" class="pixel-cloud cloud-1 right c3">
+        <img src="../../assets/cloud3.png" class="pixel-cloud cloud-1 right c1">
+        <img src="../../assets/cloud3.png" class="pixel-cloud cloud-1 left c2">
+        <img src="../../assets/cloud3.png" class="pixel-cloud cloud-1 right c3">
+        <img src="../../assets/cloud3.png" class="pixel-cloud cloud-3 left c4">
+        <img src="../../assets/cloud3.png" class="pixel-cloud cloud-3 right c5">
 
-        <!-- Large clouds -->
-        <img src="assets/cloud3.png" class="pixel-cloud cloud-3 left c4">
-        <img src="assets/cloud3.png" class="pixel-cloud cloud-3 right c5">
 
     </div>
 
     <div class="victory-card">
-        <div class="trophy">🏆</div>
-        <h1 class="legendary">Master Mage</h1>
+        <div class="trophy">🎓</div>
+
+        <h1 class="legendary">Maestro del Español</h1>
+
         <div class="parchment" style="max-width: 600px; margin: 0 auto;">
-            <h2>Graduation Complete</h2>
-            <p>You have conquered the 5 Trials of Python. The village is safe, and your code is legendary.</p>
+            <h2>¡Graduación Completa!</h2>
+
+            <p>
+                Has superado las 5 Grandes Misiones del Español.
+                Tu vocabulario es fuerte, tus verbos son precisos…
+                y el idioma ahora responde a tu llamado.
+            </p>
 
             <div class="badge-row">
-                <div class="badge" title="Syntax">📜</div>
-                <div class="badge" title="Variables">📦</div>
-                <div class="badge" title="Data">🗄️</div>
-                <div class="badge" title="Functions">⚒️</div>
-                <div class="badge" title="Mastery">🐉</div>
+                <div class="badge" title="Saludos y Frases Básicas">👋</div>
+                <div class="badge" title="Números">🔢</div>
+                <div class="badge" title="Género">⚧️</div>
+                <div class="badge" title="Verbos">📝</div>
+                <div class="badge" title="Gran Prueba">🐉</div>
             </div>
 
-            <button class="play-btn" onclick="location.href='python-level.html'">Return to Village</button>
+            <button class="play-btn" onclick="location.href='spanish-level.html'">Volver al Mapa</button>
+
             <br><br>
-            <button class="nav-btn" onclick="resetGame()"
-                style="color: #8b4513; font-size: 0.8rem; cursor: pointer; background: none; border: none;">Reset
-                Academy Progress</button>
+
+            <button class="nav-btn" onclick="resetSpanish()"
+                style="color: #8b4513; font-size: 0.8rem; cursor: pointer; background: none; border: none;">
+                Reiniciar Progreso de Español
+            </button>
         </div>
     </div>
 
     <script>
-        function resetGame() {
-            if (confirm("Are you sure you want to forget all your spells and start over?")) {
-                localStorage.clear();
-                location.href = 'python-level.html';
+        function resetSpanish() {
+            if (confirm("¿Seguro que quieres borrar tu progreso de Español?")) {
+
+                // Only erase Spanish quest progress
+                localStorage.removeItem("s1Complete");
+                localStorage.removeItem("s2Complete");
+                localStorage.removeItem("s3Complete");
+                localStorage.removeItem("s4Complete");
+                localStorage.removeItem("s5Complete");
+
+                localStorage.removeItem("spanishQuestC"); // from quest 1
+
+                location.href = 'spanish-level.html';
             }
         }
 

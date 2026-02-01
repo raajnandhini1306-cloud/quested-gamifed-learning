@@ -3,70 +3,68 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Quest 4: The Spell Forge</title>
-    <link rel="stylesheet" href="css/quest-style.css">
+    <title>Quest 5: The Grand Trial</title>
+    <link rel="stylesheet" href="../../css/quest-style.css">
 </head>
 
 <body>
     <div class="scroll-container">
         <div class="parchment">
-            <h1 id="title">Quest 4: The Spell Forge</h1>
+            <h1 id="title">Quest 5: The Grand Trial</h1>
 
             <section class="lesson-content">
-                <h3>What is a Function?</h3>
+                <h3>⚔️ The Final Boss</h3>
                 <p>
-                    A <strong>function</strong> is like a <strong>spell</strong> you can cast again and again.
-                    You define it once, then reuse it anytime.
+                    You have reached the end of the village path.
+                    Now you must face the <strong>Code Guardian</strong>.
+                    Every question is a spell test from everything you've learned so far.
                 </p>
 
-                <h3>The Function Spell Format</h3>
-                <p>In Python, functions are created using <code>def</code>:</p>
-
-                <div
-                    style="background:#000;color:#0f0;padding:12px;border-radius:8px;font-family:monospace;text-align:left;">
-                    def cast_spell(mana, level):<br>
-                    &nbsp;&nbsp;result = mana * level<br>
-                    &nbsp;&nbsp;return result
-                </div>
-
-                <h3>Key Parts (Very Important)</h3>
+                <h3>What You Need to Know</h3>
                 <ul>
-                    <li><strong><code>def</code></strong> → starts the function spell</li>
-                    <li><strong><code>mana, level</code></strong> → inputs (parameters)</li>
-                    <li><strong><code>return</code></strong> → sends the answer back</li>
+                    <li><b>Strings</b> → Quotes matter (<code>"5"</code> vs <code>5</code>)</li>
+                    <li><b>Variables</b> → Assignment & overwrite (<code>x = 10</code> then <code>x = 20</code>)</li>
+                    <li><b>Lists</b> → Indexing (<code>items[1]</code>)</li>
+                    <li><b>Loops</b> → Repeating actions</li>
+                    <li><b>Functions</b> → <code>def</code> and <code>return</code></li>
                 </ul>
 
+                <h3>Boss Battle Rules</h3>
                 <p style="background: rgba(62, 39, 18, 0.1); padding: 10px; border-left: 4px solid #3e2712;">
-                    <strong>Your Mission:</strong>
-                    In the Spell Forge, complete the function logic and test it on crystals.
-                    If your formula is correct, the crystals will glow with the right power!
+                    ✅ Correct answer = <b>Guardian HP decreases</b><br>
+                    ❌ Wrong answer = <b>You take damage</b><br>
+                    🏆 Reduce Guardian HP to <b>0</b> to win the trial.
+                </p>
+
+                <h3>Tip</h3>
+                <p>
+                    Don’t rush. Read the code carefully.
+                    Most mistakes are small: brackets, quotes, and capital letters like <code>Print()</code>.
                 </p>
             </section>
 
-            <!-- progress bar  -->
             <div class="progress-container"
                 style="width: 100%; background: #3e2712; height: 10px; border-radius: 5px; margin: 20px 0;">
                 <div id="progressBar" style="background: #f1c40f; height: 100%; width: 100%; border-radius: 5px;">
                 </div>
             </div>
 
-            <!-- Buttons -->
             <div style="display:flex; gap:10px; justify-content:center; flex-wrap:wrap;">
-                <button class="play-btn" onclick="location.href='quest4-game.html'">Enter the Spell Forge</button>
+                <button class="play-btn" onclick="location.href='quest5-game.html'">Enter the Trial</button>
                 <button class="play-btn" style="background:#3e2712" onclick="location.href='python-level.html'">Back to
                     Map</button>
             </div>
 
             <a class="reset-link" style="cursor:pointer; display:block; margin-top:14px;"
-                onclick="resetQuest4()">Restart Quest 4</a>
+                onclick="resetQuest5()">Restart Quest 5</a>
         </div>
     </div>
 
     <script>
-        function resetQuest4() {
-            localStorage.removeItem("q4Complete");
-            alert("Quest 4 progress cleared ✅");
-            location.href = "q4info.html";
+        function resetQuest5() {
+            localStorage.removeItem("q5Complete");
+            alert("Quest 5 progress cleared ✅");
+            location.href = "q5info.html";
         }
 
         document.addEventListener("DOMContentLoaded", () => {

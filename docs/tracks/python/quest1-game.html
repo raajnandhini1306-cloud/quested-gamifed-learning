@@ -1,10 +1,10 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <title>The Coding Chamber</title>
-    <link rel="stylesheet" href="css/quest-style.css">
+    <link rel="stylesheet" href="../../css/quest-style.css">
 
     <style>
         .hud {
@@ -163,41 +163,7 @@
             font-size: 16px;
         }
 
-        .btn-row {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            margin-top: 16px;
-        }
 
-        .game-btn {
-            cursor: pointer;
-            border: none;
-            border-radius: 12px;
-            padding: 10px 14px;
-            font-weight: 800;
-            transition: transform 0.08s ease, opacity 0.2s ease;
-        }
-
-        .game-btn:active {
-            transform: scale(0.98);
-        }
-
-        .btn-primary {
-            background: #22c55e;
-            color: #052e12;
-        }
-
-        .btn-secondary {
-            background: rgba(0, 0, 0, 0.12);
-            color: #111827;
-        }
-
-        .btn-ghost {
-            background: transparent;
-            color: rgba(0, 0, 0, 0.65);
-            text-decoration: underline;
-        }
 
         /* Mobile */
         @media (max-width: 700px) {
@@ -247,7 +213,7 @@
             </div>
 
             <div class="console-history" id="history">
-                <p class="line"><span class="ok">Welcome, Coder.</span> Type the spell and press Enter ⚡</p>
+                <p class="line"><span class="ok">Welcome, Coder.</span> Type the spell and press Enter</p>
             </div>
 
             <div class="console-input">
@@ -260,9 +226,11 @@
         <p id="feedback" style="margin-top:14px; font-weight:900;"></p>
 
         <div class="btn-row">
-            <button class="game-btn btn-primary" id="nextBtn" style="display:none;">Next Task ➜</button>
+            <button class="game-btn btn-primary" id="nextBtn" style="display:none;">Next Task</button>
             <button class="game-btn btn-secondary" id="retryBtn">Retry</button>
-            <button class="game-btn btn-ghost" id="resetBtn">Reset Quest</button>
+            <button class="game-btn btn-secondary" id="resetBtn">Reset Quest</button>
+            <button class="game-btn btn-secondary" onclick="location.href='python-level.html'">Back to Map</button>
+
         </div>
     </div>
 
@@ -325,7 +293,7 @@
 
         function completeQuest() {
             feedback.style.color = "#16a34a";
-            feedback.innerHTML = "🏆 Quest 1 Complete! Returning to map...";
+            feedback.innerHTML = "ðŸ† Quest 1 Complete! Returning to map...";
             addLine(`<span class="ok">Quest Completed.</span>`);
 
             localStorage.setItem("q1Complete", "1");
@@ -350,13 +318,13 @@
 
         function successFlow() {
             feedback.style.color = "#16a34a";
-            feedback.innerHTML = "✨ Spell Successful! Click Next Task.";
+            feedback.innerHTML = "âœ¨ Spell Successful! Click Next Task.";
             nextBtn.style.display = "inline-block";
         }
 
         function failFlow() {
             feedback.style.color = "#fb7185";
-            feedback.innerHTML = "❌ The magic failed. Check your quotes and brackets!";
+            feedback.innerHTML = "âŒ The magic failed. Check your quotes and brackets!";
         }
 
         /* Main Game logic*/
@@ -375,7 +343,7 @@
             const cleanTarget = normalize(tasks[currentTask].target);
 
             if (cleanInput === cleanTarget) {
-                addLine(`<span class="ok">✓ Spell Successful</span><span class="output"> ${tasks[currentTask].output}</span>`);
+                addLine(`<span class="ok">âœ“ Spell Successful</span><span class="output"> ${tasks[currentTask].output}</span>`);
                 successFlow();
 
                 currentTask++;
@@ -387,7 +355,7 @@
                     return;
                 }
             } else {
-                addLine(`<span class="err">✗ Error</span><span class="output"> Try again</span>`);
+                addLine(`<span class="err">âœ— Error</span><span class="output"> Try again</span>`);
                 failFlow();
             }
         }
@@ -413,7 +381,7 @@
             localStorage.setItem('qTask', 0);
             localStorage.removeItem("q1Complete");
             currentTask = 0;
-            history.innerHTML = `<p class="line"><span class="ok">Quest reset.</span> Start again ⚡</p>`;
+            history.innerHTML = `<p class="line"><span class="ok">Quest reset.</span> Start again âš¡</p>`;
             loadTask();
         });
 

@@ -1,10 +1,10 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <title>Level 5: The Grand Trial</title>
-    <link rel="stylesheet" href="css/quest-style.css">
+    <link rel="stylesheet" href="../../css/quest-style.css">
 
     <style>
         .boss-area {
@@ -141,7 +141,7 @@
     <div class="parchment arena">
 
         <div class="boss-area">
-            <h2 style="margin-bottom:4px;">🐉 The Code Guardian</h2>
+            <h2 style="margin-bottom:4px;">ðŸ‰ The Code Guardian</h2>
             <p class="smalltip">Defeat the Guardian by answering questions correctly!</p>
 
             <div class="bars">
@@ -167,7 +167,7 @@
             <!-- Progress -->
             <div class="hud-top">
                 <span id="qCount">Question 1 / 10</span>
-                <span>Rule: Wrong answer → Guardian attacks ⚔️</span>
+                <span>Rule: Wrong answer â†’ Guardian attacks âš”ï¸</span>
             </div>
             <div class="progress-bar">
                 <div class="progress-fill" id="progFill"></div>
@@ -181,6 +181,9 @@
         </div>
 
         <p id="feedback"></p>
+        <div class="btn-row">
+            <button class="game-btn btn-secondary" onclick="location.href='python-level.html'">Back to Map</button>
+        </div>
     </div>
 
     <script>
@@ -270,7 +273,7 @@
             if (selected === q.answer) {
                 bossHP = Math.max(0, bossHP - 10);
                 feedback.style.color = "green";
-                feedback.innerText = "💥 Critical Hit! Guardian takes damage.";
+                feedback.innerText = "ðŸ’¥ Critical Hit! Guardian takes damage.";
 
                 updateBars();
 
@@ -284,7 +287,7 @@
                 // player takes damage
                 playerHP = Math.max(0, playerHP - 12);
                 feedback.style.color = "#e74c3c";
-                feedback.innerText = `🛡️ Blocked! Correct answer: ${q.answer}`;
+                feedback.innerText = `ðŸ›¡ï¸ Blocked! Correct answer: ${q.answer}`;
 
                 updateBars();
 
@@ -295,7 +298,7 @@
 
                 setTimeout(() => {
                     lockOptions(false);
-                    feedback.innerText = "Try again ⚔️";
+                    feedback.innerText = "Try again âš”ï¸";
                 }, 900);
             }
 
@@ -307,7 +310,7 @@
         function winGame() {
             progFill.style.width = "100%";
             feedback.style.color = "green";
-            feedback.innerText = "🏆 You are a Python Master.";
+            feedback.innerText = "ðŸ† You are a Python Master.";
 
             localStorage.setItem("q5Complete", "1");
 
@@ -318,7 +321,7 @@
 
         function loseGame() {
             feedback.style.color = "#e74c3c";
-            feedback.innerText = "💀 You were defeated! Return stronger and try again.";
+            feedback.innerText = "ðŸ’€ You were defeated! Return stronger and try again.";
 
             setTimeout(() => {
                 location.href = "python-level.html";

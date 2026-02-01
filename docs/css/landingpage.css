@@ -168,11 +168,13 @@ img {
 
 .pixel-cloud {
     position: absolute;
-    width: 500px;
-    /* FORCE SIZE */
+    width: auto;
+    /* SCALE WITH TRANSFORM INSTEAD */
     height: auto;
+    max-width: 300px;
     image-rendering: pixelated;
-    opacity: 0.85;
+    opacity: 0.6;
+    mix-blend-mode: screen;
     animation: floatClouds linear infinite;
 }
 
