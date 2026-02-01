@@ -116,6 +116,16 @@ function signup(e) {
         return;
     }
 
+    // Check if user already exists
+    const saved = localStorage.getItem("questedUser");
+    if (saved) {
+        const existingUser = JSON.parse(saved);
+        if (existingUser.email && existingUser.email.toLowerCase() === email) {
+            showMsg("❌ Account already exists! Please Log In.", false);
+            return;
+        }
+    }
+
     const user = { name, email };
     localStorage.setItem("questedUser", JSON.stringify(user));
     localStorage.setItem("isLoggedIn", "1");
