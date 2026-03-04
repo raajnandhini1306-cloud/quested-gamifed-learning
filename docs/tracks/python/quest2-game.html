@@ -147,7 +147,7 @@
             <button class="game-btn btn-secondary" onclick="location.href='python-level.html'">Back to Map</button>
         </div>
     </div>
-
+    <script src="js/auth.js"></script>
     <script>
 
         const PAIRS = [
@@ -269,7 +269,7 @@
                     setFeedback("ðŸ† All Matched! Returning to map...", true);
 
                     localStorage.setItem("q2Complete", "1");
-
+                    saveProgress("Python-quest2");
                     setTimeout(() => { location.href = "python-level.html"; }, 1500);
                 }
             } else {

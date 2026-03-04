@@ -218,7 +218,7 @@
             <button class="game-btn btn-secondary" onclick="location.href='python-level.html'">Back to Map</button>
         </div>
     </div>
-
+    <script src="js/auth.js"></script>
     <script>
 
         const EXERCISES = [
@@ -375,7 +375,14 @@
             } else {
                 // last exercise complete => quest complete
                 localStorage.setItem("q3Complete", "1");
+<<<<<<< HEAD:docs/tracks/python/quest3-game.html
                 feedback.innerText = "ðŸ† Level 3 Complete! Returning to map...";
+=======
+
+                saveProgress("Python-quest3");
+
+                feedback.innerText = "🏆 Level 3 Complete! Returning to map...";
+>>>>>>> b59e43b (Backend Commit - QuestED gamified learning platform):docs/quest3-game.html
                 setTimeout(() => location.href = "python-level.html", 1500);
             }
         }

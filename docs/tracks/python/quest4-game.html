@@ -206,7 +206,7 @@
             </div>
         </div>
     </div>
-
+    <script src="js/auth.js"></script>
     <script>
 
 
@@ -408,6 +408,7 @@ def power(base, exp=2):
                 updateUI();
             } else {
                 localStorage.setItem("q4Complete", "1");
+                saveProgress("Python-quest4");
                 feedback.style.color = "green";
                 feedback.innerText = "ðŸ† Quest 4 Complete! Returning to map...";
                 progressFill.style.width = "100%";

@@ -290,8 +290,34 @@
             taskCount.innerText = `${Math.min(currentTask + 1, tasks.length)} / ${tasks.length}`;
             progressFill.style.width = `${percent}%`;
         }
+        async function saveProgress(questName) {
 
+            const email = localStorage.getItem("userEmail");
+
+            if (!email) return;
+
+            try {
+                await fetch("http://localhost:5000/progress", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        email: email,
+                        quest: questName
+                    })
+                });
+
+                console.log("Progress saved");
+
+            } catch (err) {
+                console.log("Progress save failed");
+            }
+        }
         function completeQuest() {
+
+            saveProgress("Python-quest1");
+
             feedback.style.color = "#16a34a";
             feedback.innerHTML = "ðŸ† Quest 1 Complete! Returning to map...";
             addLine(`<span class="ok">Quest Completed.</span>`);

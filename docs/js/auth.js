@@ -26,24 +26,50 @@ function fillDemo() {
     showMsg("✅ Loaded saved account email. Type your password.", true);
 }
 
+<<<<<<< HEAD
 // Auth Redirects tailored for "docs/auth" -> "docs/hub" structure
 
 function login(e) {
+=======
+async function login(e) {
+>>>>>>> b59e43b (Backend Commit - QuestED gamified learning platform)
     e.preventDefault();
 
-    const emailInput = document.getElementById("email");
-    const passInput = document.getElementById("pass");
+    const email = document.getElementById("email").value.trim().toLowerCase();
+    const pass = document.getElementById("pass").value.trim();
 
-    if (!emailInput || !passInput) return;
+    try {
+        const response = await fetch("http://localhost:5000/login", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                email: email,
+                password: pass
+            })
+        });
 
-    const email = emailInput.value.trim().toLowerCase();
-    const pass = passInput.value.trim();
+        const data = await response.json();
 
-    const saved = localStorage.getItem("questedUser");
-    if (!saved) {
-        showMsg("❌ No account exists. Please Sign Up first.", false);
-        return;
+        if (!data.success) {
+            showMsg("Invalid login credentials.", false);
+            return;
+        }
+
+        localStorage.setItem("isLoggedIn", "1");
+        localStorage.setItem("userEmail", email);
+
+        showMsg("Logged in! Loading skill selection...", true);
+
+        setTimeout(() => {
+            location.href = "skillselection.html";
+        }, 700);
+
+    } catch (err) {
+        showMsg("Cannot connect to server.", false);
     }
+<<<<<<< HEAD
 
     const user = JSON.parse(saved);
 
@@ -74,6 +100,8 @@ function login(e) {
     showMsg("✅ Logged in! Loading skill selection...", true);
     // Redirect to Hub
     setTimeout(() => location.href = "../hub/skillselection.html", 700);
+=======
+>>>>>>> b59e43b (Backend Commit - QuestED gamified learning platform)
 }
 
 function clearForm() {
@@ -86,36 +114,30 @@ function clearForm() {
     if (msg) msg.style.display = "none";
 }
 
-function signup(e) {
+async function signup(e) {
     e.preventDefault();
 
-    const nameInput = document.getElementById("name");
-    const emailInput = document.getElementById("email");
-    const passInput = document.getElementById("pass");
-    const confirmInput = document.getElementById("confirm");
-
-    if (!nameInput || !emailInput || !passInput || !confirmInput) return;
-
-    const name = nameInput.value.trim();
-    const email = emailInput.value.trim().toLowerCase();
-    const pass = passInput.value;
-    const confirm = confirmInput.value;
+    const name = document.getElementById("name").value.trim();
+    const email = document.getElementById("email").value.trim().toLowerCase();
+    const pass = document.getElementById("pass").value;
+    const confirm = document.getElementById("confirm").value;
 
     if (name.length < 2) {
-        showMsg("❌ Name too short.", false);
+        showMsg("Name too short.", false);
         return;
     }
 
     if (pass.length < 6) {
-        showMsg("❌ Password must be at least 6 characters.", false);
+        showMsg("Password must be at least 6 characters.", false);
         return;
     }
 
     if (pass !== confirm) {
-        showMsg("❌ Passwords do not match.", false);
+        showMsg("Passwords do not match.", false);
         return;
     }
 
+<<<<<<< HEAD
     // Check if user already exists
     const saved = localStorage.getItem("questedUser");
     if (saved) {
@@ -130,13 +152,44 @@ function signup(e) {
     localStorage.setItem("questedUser", JSON.stringify(user));
     localStorage.setItem("isLoggedIn", "1");
     localStorage.setItem("playerName", name);
+=======
+    try {
+        const response = await fetch("http://localhost:5000/signup", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                email: email,
+                password: pass
+            })
+        });
+>>>>>>> b59e43b (Backend Commit - QuestED gamified learning platform)
 
-    showMsg("✅ Account created! Heading to Character Creation...", true);
+        const data = await response.json();
 
+<<<<<<< HEAD
     setTimeout(() => {
         // Redirect to Hub -> Avatar
         location.href = "../hub/avatar-selection.html";
     }, 900);
+=======
+        if (data.success) {
+            showMsg("✅ Account created!", true);
+            localStorage.setItem("playerName", name);
+
+            setTimeout(() => {
+                location.href = "login.html";
+            }, 900);
+
+        } else {
+            showMsg(" " + data.message, false);
+        }
+
+    } catch (err) {
+        showMsg("Server not responding.", false);
+    }
+>>>>>>> b59e43b (Backend Commit - QuestED gamified learning platform)
 }
 
 function checkAuth(loginPath = "login.html") {
@@ -168,7 +221,7 @@ function forgotPassword() {
         if (email.includes("@")) {
             alert(`🦄 A magic scroll with password reset instructions has been sent to ${email}!`);
         } else {
-            alert("❌ That doesn't look like a valid email address.");
+            alert(" That doesn't look like a valid email address.");
         }
     }
 }
@@ -190,3 +243,25 @@ function logout(loginPath = "login.html") {
         }
     }
 })();
+async function saveProgress(questName) {
+
+    const email = localStorage.getItem("userEmail");
+
+    if (!email) return;
+
+    try {
+        await fetch("http://localhost:5000/progress", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                email: email,
+                quest: questName
+            })
+        });
+
+    } catch (err) {
+        console.log("Progress save failed");
+    }
+}

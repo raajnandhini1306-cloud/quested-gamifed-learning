@@ -185,7 +185,7 @@
             <button class="game-btn btn-secondary" onclick="location.href='python-level.html'">Back to Map</button>
         </div>
     </div>
-
+    <script src="js/auth.js"></script>
     <script>
         const QUESTIONS = [
             { code: 'print("Magic" + "Portal")', options: ["Magic Portal", "MagicPortal", "Magic+Portal", "Error"], answer: "MagicPortal" },
@@ -313,7 +313,7 @@
             feedback.innerText = "ðŸ† You are a Python Master.";
 
             localStorage.setItem("q5Complete", "1");
-
+            saveProgress("Python-quest5");
             setTimeout(() => {
                 location.href = "victory.html";
             }, 1700);
