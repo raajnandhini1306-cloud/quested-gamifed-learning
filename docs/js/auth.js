@@ -38,7 +38,7 @@ function login(e) {
 // =====================
 // SIGNUP
 // =====================
-function signup(e) {
+async function signup(e) {
     e.preventDefault();
 
     const name = document.getElementById("name").value.trim();
@@ -61,20 +61,46 @@ function signup(e) {
         return;
     }
 
-    const user = {
-        name: name,
-        email: email
-    };
+    try {
 
-    localStorage.setItem("questedUser", JSON.stringify(user));
-    localStorage.setItem("isLoggedIn", "1");
-    localStorage.setItem("playerName", name);
+        const res = await fetch("http://localhost:5000/signup", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                name: name,
+                email: email,
+                password: pass
+            })
+        });
 
-    showMsg("Account created! Choose your avatar...", true);
+        const data = await res.json();
 
-    setTimeout(() => {
-        location.href = "../hub/avatar-selection.html";
-    }, 600);
+        if (data.success) {
+
+            showMsg("Account created!", true);
+
+            localStorage.setItem("isLoggedIn", "1");
+            localStorage.setItem("playerName", name);
+            localStorage.setItem("userEmail", email);
+
+            setTimeout(() => {
+                location.href = "../hub/avatar-selection.html";
+            }, 600);
+
+        } else {
+
+            showMsg(data.message || "Signup failed", false);
+
+        }
+
+    } catch (err) {
+
+        console.log(err);
+        showMsg("Server not reachable", false);
+
+    }
 }
 // =====================
 // GUEST
