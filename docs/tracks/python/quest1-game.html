@@ -316,18 +316,26 @@
         }
         function completeQuest() {
 
-            saveProgress("Python-quest1");
-
-            feedback.style.color = "#16a34a";
-            feedback.innerHTML = "ðŸ† Quest 1 Complete! Returning to map...";
-            addLine(`<span class="ok">Quest Completed.</span>`);
-
             localStorage.setItem("q1Complete", "1");
-            localStorage.setItem("qTask", tasks.length);
-
+        
+            localStorage.setItem("qTask", 0);
+        
+            saveProgress("Python-quest1");
+        
+            feedback.style.color = "#16a34a";
+            feedback.innerHTML = "🏆 Quest 1 Complete! Returning to map...";
+        
+            addLine(`<span class="ok">Quest Completed.</span>`);
+        
             nextBtn.style.display = "none";
-
-            setTimeout(() => location.href = "python-level.html", 1300);
+        
+            console.log("q1Complete =", localStorage.getItem("q1Complete"));
+        
+            setTimeout(() => {
+        
+                location.href = "python-level.html";
+        
+            }, 1000);
         }
 
         function loadTask() {
@@ -404,10 +412,11 @@
         });
 
         resetBtn.addEventListener("click", () => {
-            localStorage.setItem('qTask', 0);
+            localStorage.setItem("qTask", 0);
             localStorage.removeItem("q1Complete");
             currentTask = 0;
-            history.innerHTML = `<p class="line"><span class="ok">Quest reset.</span> Start again âš¡</p>`;
+            history.innerHTML =
+                `<p class="line"><span class="ok">Quest reset.</span> Start again ⚡</p>`;
             loadTask();
         });
 
