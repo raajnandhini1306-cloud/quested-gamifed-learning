@@ -11,8 +11,8 @@ function showMsg(text, ok = true) {
 // =====================
 // LOGIN
 // =====================
+async function login(e) {
 
-function login(e) {
     e.preventDefault();
 
     const email = document.getElementById("email").value.trim();
@@ -23,15 +23,44 @@ function login(e) {
         return;
     }
 
-    localStorage.setItem("isLoggedIn", "1");
-    localStorage.setItem("playerName", "Adventurer");
-    localStorage.setItem("userEmail", email);
+    try {
 
-    showMsg("Logged in! Loading skill selection...", true);
+        const res = await fetch("http://localhost:5000/login", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                email: email,
+                password: pass
+            })
+        });
 
-    setTimeout(() => {
-        location.href = "../hub/skillselection.html";
-    }, 500);
+        const data = await res.json();
+
+        if (data.success) {
+
+            localStorage.setItem("isLoggedIn", "1");
+            localStorage.setItem("userEmail", email);
+
+            showMsg("Login successful", true);
+
+            setTimeout(() => {
+                location.href = "../hub/skillselection.html";
+            }, 500);
+
+        } else {
+
+            showMsg(data.message || "Invalid login", false);
+
+        }
+
+    } catch (err) {
+
+        console.log(err);
+        showMsg("Server not running", false);
+
+    }
 }
 
 
@@ -39,6 +68,7 @@ function login(e) {
 // SIGNUP
 // =====================
 async function signup(e) {
+
     e.preventDefault();
 
     const name = document.getElementById("name").value.trim();
@@ -69,7 +99,6 @@ async function signup(e) {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                name: name,
                 email: email,
                 password: pass
             })
@@ -79,7 +108,7 @@ async function signup(e) {
 
         if (data.success) {
 
-            showMsg("Account created!", true);
+            showMsg("Signup successful", true);
 
             localStorage.setItem("isLoggedIn", "1");
             localStorage.setItem("playerName", name);
@@ -91,14 +120,14 @@ async function signup(e) {
 
         } else {
 
-            showMsg(data.message || "Signup failed", false);
+            showMsg(data.message, false);
 
         }
 
     } catch (err) {
 
         console.log(err);
-        showMsg("Server not reachable", false);
+        showMsg("Server not running", false);
 
     }
 }
