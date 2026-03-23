@@ -38,7 +38,6 @@ function login(e) {
 // =====================
 // SIGNUP
 // =====================
-
 function signup(e) {
     e.preventDefault();
 
@@ -71,14 +70,12 @@ function signup(e) {
     localStorage.setItem("isLoggedIn", "1");
     localStorage.setItem("playerName", name);
 
-    showMsg("Account created! Loading...", true);
+    showMsg("Account created! Choose your avatar...", true);
 
     setTimeout(() => {
-        location.href = "../hub/skillselection.html";
+        location.href = "../hub/avatar-selection.html";
     }, 600);
 }
-
-
 // =====================
 // GUEST
 // =====================
