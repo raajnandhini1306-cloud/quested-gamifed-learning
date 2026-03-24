@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -89,12 +90,43 @@
 
             let selected = null;
             let matched = 0;
+            const total = PAIRS.length;
+
+            /* ---------- BACKEND SAVE ---------- */
+            async function saveProgress(questName) {
+                const email = localStorage.getItem("userEmail");
+                if (!email) return;
+
+                try {
+                    await fetch("http://localhost:5000/progress", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            email: email,
+                            quest: questName
+                        })
+                    });
+
+                    console.log("Progress saved");
+                } catch (err) {
+                    console.log("Progress save failed");
+                }
+            }
 
             function shuffle(arr) {
-                return arr.sort(() => Math.random() - 0.5);
+                for (let i = arr.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [arr[i], arr[j]] = [arr[j], arr[i]];
+                }
+                return arr;
             }
 
             function buildGame() {
+                valuesCol.innerHTML = "";
+                typesCol.innerHTML = "";
+
                 const values = shuffle([...PAIRS]);
                 const types = shuffle([...PAIRS]);
 
@@ -131,23 +163,30 @@
                 }
 
                 if (selected.item.type === item.type) {
+
                     selected.el.classList.add("matched");
                     el.classList.add("matched");
 
                     matched++;
-                    feedback.textContent = "Correct!";
+                    feedback.textContent = "✨ Correct!";
 
-                    if (matched === PAIRS.length) {
-                        feedback.textContent = "All matched!";
+                    if (matched === total) {
 
+                        feedback.textContent = "🏆 All matched!";
+
+                        // ✅ COMPLETE QUEST
                         localStorage.setItem("s2Complete", "1");
+
+                        // ✅ BACKEND SAVE
+                        saveProgress("Spanish-quest2");
 
                         setTimeout(() => {
                             location.href = "spanish-level.html";
                         }, 1200);
                     }
+
                 } else {
-                    feedback.textContent = "Wrong! Try again.";
+                    feedback.textContent = "❌ Wrong! Try again.";
                 }
 
                 selected = null;
