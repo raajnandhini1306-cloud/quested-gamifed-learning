@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -8,18 +9,10 @@
     <link rel="stylesheet" href="../../css/quest-style.css">
 
     <style>
-        body {
-            font-family: "Segoe UI", sans-serif;
-        }
+        body { font-family: "Segoe UI", sans-serif; }
+        .parchment { padding: 25px; }
 
-        .parchment {
-            padding: 25px;
-        }
-
-        h2 {
-            margin-bottom: 10px;
-            text-align: center;
-        }
+        h2 { margin-bottom: 10px; text-align: center; }
 
         .storybook-box {
             background: #f7f1d4;
@@ -50,9 +43,7 @@
             font-weight: 700;
         }
 
-        .row:last-child {
-            border-bottom: none;
-        }
+        .row:last-child { border-bottom: none; }
 
         .question-box {
             margin-top: 18px;
@@ -63,7 +54,6 @@
             line-height: 1.6;
             font-weight: 700;
             text-align: center;
-            display: none;
         }
 
         .crystal-container {
@@ -72,7 +62,6 @@
             gap: 16px;
             flex-wrap: wrap;
             justify-content: center;
-            display: none;
         }
 
         .crystal {
@@ -87,9 +76,7 @@
             transition: transform 0.15s ease;
         }
 
-        .crystal:hover {
-            transform: scale(1.05);
-        }
+        .crystal:hover { transform: scale(1.05); }
 
         .crystal.correct {
             background: #8fe388;
@@ -100,6 +87,7 @@
             background: #ffb5b5;
             border: 2px solid #b43636;
         }
+
         #feedback {
             margin-top: 16px;
             font-weight: 900;
@@ -115,8 +103,8 @@
 
         <div id="teachingBox"></div>
         <div id="conjTable" class="table-block"></div>
-        <div id="questionBox"></div>
-        <div id="options"></div>
+        <div id="questionBox" class="question-box"></div>
+        <div id="options" class="crystal-container"></div>
 
         <p id="feedback"></p>
 
@@ -135,6 +123,27 @@
             ];
 
             let round = 0;
+
+            /* ---------- BACKEND SAVE ---------- */
+            async function saveProgress(questName) {
+                const email = localStorage.getItem("userEmail");
+                if (!email) return;
+
+                try {
+                    await fetch("http://localhost:5000/progress", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                            email: email,
+                            quest: questName
+                        })
+                    });
+
+                    console.log("Progress saved");
+                } catch (err) {
+                    console.log("Progress save failed");
+                }
+            }
 
             function loadRound() {
                 const data = VERBS[round];
@@ -176,9 +185,13 @@
                     div.onclick = () => {
                         if (opt === correct) {
                             div.classList.add("correct");
+
+                            document.getElementById("feedback").innerText = "✨ Correct!";
+
                             nextRound();
                         } else {
                             div.classList.add("wrong");
+                            document.getElementById("feedback").innerText = "❌ Try again!";
                         }
                     };
 
@@ -188,12 +201,21 @@
 
             function nextRound() {
                 round++;
+
                 if (round >= VERBS.length) {
+
+                    // ✅ COMPLETE QUEST
                     localStorage.setItem("s4Complete", "1");
+
+                    // ✅ BACKEND SAVE
+                    saveProgress("Spanish-quest4");
+
+                    document.getElementById("feedback").innerText = "🏆 Level 4 Complete!";
 
                     setTimeout(() => {
                         location.href = "spanish-level.html";
-                    }, 1000);
+                    }, 1200);
+
                     return;
                 }
 
