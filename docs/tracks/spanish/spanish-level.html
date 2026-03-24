@@ -6,11 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>QuestEd | Spanish Map</title>
 
-    <!-- CSS -->
     <link rel="stylesheet" href="../../css/python-level.css">
-
-    <!-- REQUIRED for isGuest() -->
-    <script src="../../js/auth.js"></script>
 </head>
 
 <body>
@@ -69,12 +65,7 @@
     <script>
         document.addEventListener("DOMContentLoaded", () => {
 
-            // Safe fallback if auth.js missing
-            if (typeof isGuest !== "function") {
-                window.isGuest = () => false;
-            }
-
-            // Progress check
+            // Progress from localStorage
             const s1Done = localStorage.getItem("s1Complete") === "1";
             const s2Done = localStorage.getItem("s2Complete") === "1";
             const s3Done = localStorage.getItem("s3Complete") === "1";
@@ -120,20 +111,7 @@
                 el.classList.remove("locked");
             }
 
-            function checkGuestAccess(nextLevelEl) {
-                if (isGuest()) {
-                    nextLevelEl.classList.add("locked");
-                    nextLevelEl.onclick = () => {
-                        if (confirm("🔒 Trial Complete!\n\nGuest Mode only allows the first level.\n\nSign up to unlock the full adventure?")) {
-                            location.href = "../../auth/signup.html";
-                        }
-                    };
-                    return true;
-                }
-                return false;
-            }
-
-            // Level 1 always open
+            // Level 1 always unlocked
             makeClickable(lvl1);
 
             // Mark completed levels
@@ -143,14 +121,11 @@
             if (s4Done) markCompleted(lvl4);
             if (s5Done) markCompleted(lvl5);
 
-            // Unlock flow
-            if (s1Done) {
-                if (!checkGuestAccess(lvl2)) unlockWithAnim(lvl2);
-            } else lock(lvl2);
-
-            if (s2Done && !isGuest()) unlockWithAnim(lvl3); else lock(lvl3);
-            if (s3Done && !isGuest()) unlockWithAnim(lvl4); else lock(lvl4);
-            if (s4Done && !isGuest()) unlockWithAnim(lvl5); else lock(lvl5);
+            // Unlock progression
+            if (s1Done) unlockWithAnim(lvl2); else lock(lvl2);
+            if (s2Done) unlockWithAnim(lvl3); else lock(lvl3);
+            if (s3Done) unlockWithAnim(lvl4); else lock(lvl4);
+            if (s4Done) unlockWithAnim(lvl5); else lock(lvl5);
 
             // Current level logic
             function setCurrentLevel() {
