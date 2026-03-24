@@ -53,49 +53,67 @@
                 ? parseInt(localStorage.getItem('spanishQuestC'))
                 : 0;
 
-            const tasks = [
-                {
-                    instr: `Hello traveler!<br>Type: <strong>hola</strong>`,
-                    answer: 'hola'
-                },
-                {
-                    instr: `Say thank you.<br>Type: <strong>gracias</strong>`,
-                    answer: 'gracias'
-                },
-                {
-                    instr: `Say goodbye.<br>Type: <strong>adios</strong>`,
-                    answer: 'adios'
-                },
-                {
-                    instr: `Friend in Spanish?<br>Type: <strong>amigo</strong>`,
-                    answer: 'amigo'
-                },
-                {
-                    instr: `Water in Spanish?<br>Type: <strong>agua</strong>`,
-                    answer: 'agua'
-                },
-                {
-                    instr: `House in Spanish?<br>Type: <strong>casa</strong>`,
-                    answer: 'casa'
-                },
-                {
-                    instr: `Red in Spanish?<br>Type: <strong>rojo</strong>`,
-                    answer: 'rojo'
-                },
-                {
-                    instr: `Food in Spanish?<br>Type: <strong>comida</strong>`,
-                    answer: 'comida'
-                },
-                {
-                    instr: `Happy in Spanish?<br>Type: <strong>feliz</strong>`,
-                    answer: 'feliz'
-                },
-                {
-                    instr: `Learned in Spanish?<br>Type: <strong>aprendido</strong>`,
-                    answer: 'aprendido'
-                }
-            ];
-
+    const tasks = [
+        {
+            instr: `🌅 You awaken in a mysterious land…<br>
+            A villager greets you.<br>
+            🗣️ Say hello → <strong>hola</strong>`,
+            answer: 'hola'
+        },
+        {
+            instr: `🙏 The villager smiles warmly.<br>
+            Time to show gratitude.<br>
+            💬 Say thank you → <strong>gracias</strong>`,
+            answer: 'gracias'
+        },
+        {
+            instr: `🌇 The sun begins to set…<br>
+            You must part ways.<br>
+            👋 Say goodbye → <strong>adios</strong>`,
+            answer: 'adios'
+        },
+        {
+            instr: `🤝 You meet a companion on your journey.<br>
+            🧍 What is "friend" in Spanish?<br>
+            → <strong>amigo</strong>`,
+            answer: 'amigo'
+        },
+        {
+            instr: `💧 You feel thirsty after traveling…<br>
+            🥤 Ask for water → <strong>agua</strong>`,
+            answer: 'agua'
+        },
+        {
+            instr: `🏡 You arrive at a cozy shelter.<br>
+            🏠 What is "house" in Spanish?<br>
+            → <strong>casa</strong>`,
+            answer: 'casa'
+        },
+        {
+            instr: `🌹 You see a glowing red flower.<br>
+            🎨 What is "red" in Spanish?<br>
+            → <strong>rojo</strong>`,
+            answer: 'rojo'
+        },
+        {
+            instr: `🍲 A meal is prepared for you.<br>
+            🍽️ What is "food" in Spanish?<br>
+            → <strong>comida</strong>`,
+            answer: 'comida'
+        },
+        {
+            instr: `😊 You feel joy after your journey.<br>
+            💫 What is "happy" in Spanish?<br>
+            → <strong>feliz</strong>`,
+            answer: 'feliz'
+        },
+        {
+            instr: `🎓 You have learned so much…<br>
+            📖 What is "learned" in Spanish?<br>
+            → <strong>aprendido</strong>`,
+            answer: 'aprendido'
+        }
+    ];
             const taskInstr = document.getElementById("taskInstr");
             const progressFill = document.getElementById("progressFill");
             const progressText = document.getElementById("progressText");
