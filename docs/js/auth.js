@@ -2,7 +2,7 @@ function showMsg(text, ok = true) {
     const box = document.getElementById("msg");
     if (!box) return;
 
-    box.className = "msg " + (ok ? "ok" : "err");
+    box.className = "msg " + (ok ? "ok": "err");
     box.style.display = "block";
     box.innerText = text;
 }
@@ -25,16 +25,19 @@ async function login(e) {
 
     try {
 
-        const res = await fetch("http://localhost:5000/login", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                email: email,
-                password: pass
-            })
-        });
+        const res = await fetch(
+            "https://quested-backend.onrender.com/login",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    email: email,
+                    password: pass
+                })
+            }
+        );
 
         const data = await res.json();
 
@@ -58,7 +61,7 @@ async function login(e) {
     } catch (err) {
 
         console.log(err);
-        showMsg("Server not running", false);
+        showMsg("Server not reachable", false);
 
     }
 }
@@ -67,67 +70,57 @@ async function login(e) {
 // =====================
 // SIGNUP
 // =====================
-async function signup(e) {
+async function login(e) {
 
     e.preventDefault();
 
-    const name = document.getElementById("name").value.trim();
     const email = document.getElementById("email").value.trim();
-    const pass = document.getElementById("pass").value;
-    const confirm = document.getElementById("confirm").value;
+    const pass = document.getElementById("pass").value.trim();
 
-    if (name.length < 2) {
-        showMsg("Name too short", false);
-        return;
-    }
-
-    if (pass.length < 6) {
-        showMsg("Password must be 6+ chars", false);
-        return;
-    }
-
-    if (pass !== confirm) {
-        showMsg("Passwords do not match", false);
+    if (!email || !pass) {
+        showMsg("Enter email and password", false);
         return;
     }
 
     try {
 
-        const res = await fetch("http://localhost:5000/signup", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                email: email,
-                password: pass
-            })
-        });
+        const res = await fetch(
+            "https://quested-backend.onrender.com/login",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    email: email,
+                    password: pass
+                })
+            }
+        );
 
         const data = await res.json();
 
         if (data.success) {
 
-            showMsg("Signup successful", true);
-
             localStorage.setItem("isLoggedIn", "1");
-            localStorage.setItem("playerName", name);
             localStorage.setItem("userEmail", email);
 
+            showMsg("Login successful", true);
+
             setTimeout(() => {
-                location.href = "../hub/avatar-selection.html";
-            }, 600);
+                location.href = "../hub/skillselection.html";
+            }, 500);
 
         } else {
 
-            showMsg(data.message, false);
+            showMsg(data.message || "Invalid login", false);
 
         }
 
     } catch (err) {
 
         console.log(err);
-        showMsg("Server not running", false);
+        showMsg("Server not reachable", false);
 
     }
 }
