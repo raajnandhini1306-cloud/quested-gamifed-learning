@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -35,8 +34,8 @@
             </div>
         </div>
 
-        <!-- Levels -->
-        <div class="waypoint current" id="lvl1" data-href="quest1_trial.html" style="top: 80%; left: 12%;">
+        <!-- Levels (NO "current" in HTML) -->
+        <div class="waypoint" id="lvl1" data-href="quest1_trial.html" style="top: 80%; left: 12%;">
             <div class="pin"></div>
             <span class="label">Level 1</span>
         </div>
@@ -63,15 +62,14 @@
 
     </div>
 
-    <!-- AUTH -->
-    <script src="../../js/auth.js"></script>
-
     <script>
-        console.log("📍 Spanish Level Page Loaded");
+        console.log("📍 Spanish Map Loaded");
 
-        // SAME AS PYTHON
-        checkAuth('../../auth/login.html');
+        // ✅ STRONG guest detection
+        const userEmail = localStorage.getItem("userEmail");
+        const isRealGuest = !userEmail || userEmail === "guest";
 
+        // ✅ Progress flags
         const s1Done = localStorage.getItem("s1Complete") === "1";
         const s2Done = localStorage.getItem("s2Complete") === "1";
         const s3Done = localStorage.getItem("s3Complete") === "1";
@@ -87,18 +85,24 @@
         function makeClickable(el) {
             if (!el) return;
             el.classList.remove("locked");
-            el.onclick = () => {
-                const href = el.dataset.href;
-                if (href) location.href = href;
-            };
+            el.onclick = () => location.href = el.dataset.href;
         }
 
-        function lock(el) {
+        function lock(el, customHandler = null) {
             if (!el) return;
             el.classList.add("locked");
-            el.onclick = () => {
-                alert("🔒 Complete the previous level first!");
-            };
+
+            if (customHandler) {
+                el.onclick = customHandler;
+            } else {
+                el.onclick = () => alert("🔒 Complete previous level!");
+            }
+        }
+
+        function unlock(el) {
+            if (!el) return;
+            el.classList.remove("locked");
+            makeClickable(el);
         }
 
         function markCompleted(el) {
@@ -107,77 +111,82 @@
             el.classList.remove("current");
         }
 
-        function unlockWithAnim(el) {
-            if (!el) return;
-            el.classList.remove("locked");
-            el.classList.add("unlocking");
-            setTimeout(() => el.classList.remove("unlocking"), 700);
-            makeClickable(el);
-        }
-
         function setCurrent(el) {
             if (!el) return;
             el.classList.add("current");
-            el.classList.remove("locked");
         }
 
-        // Level 1 always clickable
+        // ✅ Level 1 always clickable
         makeClickable(lvl1);
 
-        // Completed styling
-        if (s1Done) markCompleted(lvl1);
-        if (s2Done) markCompleted(lvl2);
-        if (s3Done) markCompleted(lvl3);
-        if (s4Done) markCompleted(lvl4);
-        if (s5Done) markCompleted(lvl5);
-
-        // SAME AS PYTHON (IMPORTANT FIX)
-        function checkGuestAccess(nextLevelEl) {
-            if (isGuest()) {
-                nextLevelEl.classList.add("locked");
-                nextLevelEl.onclick = () => {
-                    const confirmSignup = confirm(
-                        "🔒 Trial Complete!\n\nGuest Mode only allows the first level.\n\nWould you like to sign up to unlock the full adventure?"
-                    );
-                    if (confirmSignup) {
+        // ✅ Unlock logic (before marking completed, so completed state isn't overridden)
+        if (s1Done) {
+            if (isRealGuest) {
+                lock(lvl2, () => {
+                    if (confirm("🔒 Sign up to unlock all levels!")) {
                         location.href = "../../auth/signup.html";
                     }
-                };
-                return true;
-            }
-            return false;
-        }
-
-        // Unlock flow
-        if (s1Done) {
-            if (!checkGuestAccess(lvl2)) {
-                unlockWithAnim(lvl2);
+                });
+            } else {
+                unlock(lvl2);
             }
         } else {
             lock(lvl2);
         }
 
-        if (s2Done && !isGuest()) unlockWithAnim(lvl3); else lock(lvl3);
-        if (s3Done && !isGuest()) unlockWithAnim(lvl4); else lock(lvl4);
-        if (s4Done && !isGuest()) unlockWithAnim(lvl5); else lock(lvl5);
+        if (s2Done && !isRealGuest) {
+            unlock(lvl3);
+        } else {
+            lock(lvl3);
+        }
 
-        // Current level
+        if (s3Done && !isRealGuest) {
+            unlock(lvl4);
+        } else {
+            lock(lvl4);
+        }
+
+        if (s4Done && !isRealGuest) {
+            unlock(lvl5);
+        } else {
+            lock(lvl5);
+        }
+
+        // ✅ Mark completed levels (after unlock logic so completed styling isn't lost)
+        if (s1Done) markCompleted(lvl1);
+        if (s2Done && !isRealGuest) markCompleted(lvl2);
+        if (s3Done && !isRealGuest) markCompleted(lvl3);
+        if (s4Done && !isRealGuest) markCompleted(lvl4);
+        if (s5Done && !isRealGuest) markCompleted(lvl5);
+
+        // ✅ Current level logic (derived from data flags, not DOM state)
         function setCurrentLevel() {
-            [lvl1, lvl2, lvl3, lvl4, lvl5].forEach(el => {
-                if (el) el.classList.remove("current");
-            });
+            const levels = [lvl1, lvl2, lvl3, lvl4, lvl5];
+            levels.forEach(el => el.classList.remove("current"));
 
-            if (!s1Done) return setCurrent(lvl1);
-            if (!s2Done) return setCurrent(lvl2);
-            if (!s3Done) return setCurrent(lvl3);
-            if (!s4Done) return setCurrent(lvl4);
-            if (!s5Done) return setCurrent(lvl5);
+            const unlockedAndIncomplete = [
+                { el: lvl1, done: s1Done, unlocked: true },
+                { el: lvl2, done: s2Done, unlocked: s1Done && !isRealGuest },
+                { el: lvl3, done: s3Done, unlocked: s2Done && !isRealGuest },
+                { el: lvl4, done: s4Done, unlocked: s3Done && !isRealGuest },
+                { el: lvl5, done: s5Done, unlocked: s4Done && !isRealGuest },
+            ];
 
-            const banner = document.getElementById("allCompleteBanner");
-            if (banner) banner.style.display = "block";
+            for (const { el, done, unlocked } of unlockedAndIncomplete) {
+                if (!done && unlocked) return setCurrent(el);
+            }
+
+            document.getElementById("allCompleteBanner").style.display = "block";
         }
 
         setCurrentLevel();
+
+        // 🧪 Debug log
+        console.log({
+            userEmail,
+            isRealGuest,
+            s1Done, s2Done, s3Done, s4Done, s5Done
+        });
     </script>
 
 </body>
