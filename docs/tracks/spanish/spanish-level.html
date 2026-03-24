@@ -65,7 +65,10 @@
     <script>
         document.addEventListener("DOMContentLoaded", () => {
 
-            // Progress from localStorage
+            // 🌟 Guest mode (frontend only)
+            const isGuest = localStorage.getItem("guest") === "1";
+
+            // Progress
             const s1Done = localStorage.getItem("s1Complete") === "1";
             const s2Done = localStorage.getItem("s2Complete") === "1";
             const s3Done = localStorage.getItem("s3Complete") === "1";
@@ -111,37 +114,51 @@
                 el.classList.remove("locked");
             }
 
-            // Level 1 always unlocked
+            // Level 1 always open
             makeClickable(lvl1);
 
-            // Mark completed levels
+            // Mark completed
             if (s1Done) markCompleted(lvl1);
             if (s2Done) markCompleted(lvl2);
             if (s3Done) markCompleted(lvl3);
             if (s4Done) markCompleted(lvl4);
             if (s5Done) markCompleted(lvl5);
 
-            // Unlock progression
-            if (s1Done) unlockWithAnim(lvl2); else lock(lvl2);
-            if (s2Done) unlockWithAnim(lvl3); else lock(lvl3);
-            if (s3Done) unlockWithAnim(lvl4); else lock(lvl4);
-            if (s4Done) unlockWithAnim(lvl5); else lock(lvl5);
+            // 🔒 Guest restriction
+            if (isGuest) {
+                [lvl2, lvl3, lvl4, lvl5].forEach(el => {
+                    el.classList.add("locked");
+                    el.onclick = () => {
+                        if (confirm("🔒 Guest Mode\n\nOnly Level 1 is available.\n\nSign up to unlock all levels?")) {
+                            location.href = "../../auth/signup.html";
+                        }
+                    };
+                });
+            } else {
+                // Normal progression
+                if (s1Done) unlockWithAnim(lvl2); else lock(lvl2);
+                if (s2Done) unlockWithAnim(lvl3); else lock(lvl3);
+                if (s3Done) unlockWithAnim(lvl4); else lock(lvl4);
+                if (s4Done) unlockWithAnim(lvl5); else lock(lvl5);
+            }
 
-            // Current level logic
+            // Current level
             function setCurrentLevel() {
                 [lvl1, lvl2, lvl3, lvl4, lvl5].forEach(el => el.classList.remove("current"));
 
                 if (!s1Done) return setCurrent(lvl1);
-                if (!s2Done) return setCurrent(lvl2);
-                if (!s3Done) return setCurrent(lvl3);
-                if (!s4Done) return setCurrent(lvl4);
-                if (!s5Done) return setCurrent(lvl5);
+                if (!s2Done && !isGuest) return setCurrent(lvl2);
+                if (!s3Done && !isGuest) return setCurrent(lvl3);
+                if (!s4Done && !isGuest) return setCurrent(lvl4);
+                if (!s5Done && !isGuest) return setCurrent(lvl5);
 
-                document.getElementById("allCompleteBanner").style.display = "block";
+                if (!isGuest) {
+                    document.getElementById("allCompleteBanner").style.display = "block";
 
-                setTimeout(() => {
-                    location.href = "victory-spanish.html";
-                }, 1800);
+                    setTimeout(() => {
+                        location.href = "victory-spanish.html";
+                    }, 1800);
+                }
             }
 
             setCurrentLevel();
