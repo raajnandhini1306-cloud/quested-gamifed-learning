@@ -4,8 +4,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="Navigate the Spanish Quest Map. Complete levels to unlock new challenges and master Spanish vocabulary.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <title>QuestEd | Spanish Map</title>
-
     <link rel="stylesheet" href="../../css/python-level.css">
 </head>
 
@@ -20,9 +23,9 @@
     </div>
 
     <nav class="game-nav">
-        <button class="nav-btn" onclick="location.href='../../hub/skillselection.html'">🏠 Home</button>
-        <button class="nav-btn active">🗺️ Map</button>
-        <button class="nav-btn" onclick="location.href='../../hub/profile.html'">👤 Profile</button>
+        <a href="../../hub/skillselection.html" class="nav-btn" style="text-decoration:none;">🏠 Home</a>
+        <a href="#" class="nav-btn active" style="text-decoration:none; pointer-events: none;">🗺️ Map</a>
+        <a href="../../hub/profile.html" class="nav-btn" style="text-decoration:none;">👤 Profile</a>
     </nav>
 
     <div class="full-screen-map">
@@ -34,7 +37,6 @@
             </div>
         </div>
 
-        <!-- Levels (NO "current" in HTML) -->
         <div class="waypoint" id="lvl1" data-href="quest1_trial.html" style="top: 80%; left: 12%;">
             <div class="pin"></div>
             <span class="label">Level 1</span>
@@ -62,14 +64,19 @@
 
     </div>
 
+    <script src="../../js/auth.js"></script>
     <script>
         console.log("📍 Spanish Map Loaded");
 
-        // ✅ STRONG guest detection
-        const userEmail = localStorage.getItem("userEmail");
-        const isRealGuest = !userEmail || userEmail === "guest";
+        // 1. Authentication Guard
+        if (typeof checkAuth === 'function') {
+            checkAuth('../../auth/login.html');
+        }
 
-        // ✅ Progress flags
+        const userEmail = localStorage.getItem("userEmail");
+        const isGuest = () => !userEmail || userEmail === "guest";
+
+        // 2. Progress Flags (Specific to Spanish)
         const s1Done = localStorage.getItem("s1Complete") === "1";
         const s2Done = localStorage.getItem("s2Complete") === "1";
         const s3Done = localStorage.getItem("s3Complete") === "1";
@@ -81,112 +88,106 @@
         const lvl3 = document.getElementById("lvl3");
         const lvl4 = document.getElementById("lvl4");
         const lvl5 = document.getElementById("lvl5");
+        const allLevels = [lvl1, lvl2, lvl3, lvl4, lvl5];
 
+        // 3. Reusable Helper Functions (Identical to Python logic)
         function makeClickable(el) {
             if (!el) return;
             el.classList.remove("locked");
-            el.onclick = () => location.href = el.dataset.href;
+            el.onclick = () => {
+                const href = el.dataset.href;
+                if (href) location.href = href;
+            };
         }
 
-        function lock(el, customHandler = null) {
+        function lock(el) {
             if (!el) return;
             el.classList.add("locked");
-
-            if (customHandler) {
-                el.onclick = customHandler;
-            } else {
-                el.onclick = () => alert("🔒 Complete previous level!");
-            }
-        }
-
-        function unlock(el) {
-            if (!el) return;
-            el.classList.remove("locked");
-            makeClickable(el);
+            el.onclick = () => alert("🔒 Complete the previous level first!");
         }
 
         function markCompleted(el) {
             if (!el) return;
             el.classList.add("completed");
             el.classList.remove("current");
+            makeClickable(el); // Keep it clickable after completion
+        }
+
+        function unlockWithAnim(el) {
+            if (!el) return;
+            el.classList.remove("locked");
+            el.classList.add("unlocking");
+            setTimeout(() => el.classList.remove("unlocking"), 700);
+            makeClickable(el);
         }
 
         function setCurrent(el) {
             if (!el) return;
             el.classList.add("current");
+            el.classList.remove("locked");
         }
 
-        // ✅ Level 1 always clickable
-        makeClickable(lvl1);
-
-        // ✅ Unlock logic (before marking completed, so completed state isn't overridden)
-        if (s1Done) {
-            if (isRealGuest) {
-                lock(lvl2, () => {
-                    if (confirm("🔒 Sign up to unlock all levels!")) {
-                        location.href = "../../auth/signup.html";
-                    }
-                });
-            } else {
-                unlock(lvl2);
+        function checkGuestAccess(nextLevelEl) {
+            if (isGuest()) {
+                nextLevelEl.classList.add("locked");
+                nextLevelEl.onclick = () => {
+                    const signup = confirm("🔒 Trial Complete!\n\nGuest Mode only allows the first level.\n\nSign up to unlock all Spanish levels?");
+                    if (signup) location.href = "../../auth/signup.html";
+                };
+                return true;
             }
+            return false;
+        }
+
+        // 4. Unlock Logic
+        makeClickable(lvl1); // Level 1 is always available
+
+        // Level 2 Logic
+        if (s1Done) {
+            if (!checkGuestAccess(lvl2)) unlockWithAnim(lvl2);
         } else {
             lock(lvl2);
         }
 
-        if (s2Done && !isRealGuest) {
-            unlock(lvl3);
-        } else {
-            lock(lvl3);
-        }
+        // Higher Levels (Strict Auth Required)
+        if (s2Done && !isGuest()) unlockWithAnim(lvl3); else if (!s2Done) lock(lvl3);
+        if (s3Done && !isGuest()) unlockWithAnim(lvl4); else if (!s3Done) lock(lvl4);
+        if (s4Done && !isGuest()) unlockWithAnim(lvl5); else if (!s4Done) lock(lvl5);
 
-        if (s3Done && !isRealGuest) {
-            unlock(lvl4);
-        } else {
-            lock(lvl4);
-        }
-
-        if (s4Done && !isRealGuest) {
-            unlock(lvl5);
-        } else {
-            lock(lvl5);
-        }
-
-        // ✅ Mark completed levels (after unlock logic so completed styling isn't lost)
+        // 5. Completion Styling
         if (s1Done) markCompleted(lvl1);
-        if (s2Done && !isRealGuest) markCompleted(lvl2);
-        if (s3Done && !isRealGuest) markCompleted(lvl3);
-        if (s4Done && !isRealGuest) markCompleted(lvl4);
-        if (s5Done && !isRealGuest) markCompleted(lvl5);
+        if (s2Done && !isGuest()) markCompleted(lvl2);
+        if (s3Done && !isGuest()) markCompleted(lvl3);
+        if (s4Done && !isGuest()) markCompleted(lvl4);
+        if (s5Done && !isGuest()) markCompleted(lvl5);
 
-        // ✅ Current level logic (derived from data flags, not DOM state)
+        // 6. Set Current Level logic
         function setCurrentLevel() {
-            const levels = [lvl1, lvl2, lvl3, lvl4, lvl5];
-            levels.forEach(el => el.classList.remove("current"));
+            allLevels.forEach(el => el && el.classList.remove("current"));
 
-            const unlockedAndIncomplete = [
-                { el: lvl1, done: s1Done, unlocked: true },
-                { el: lvl2, done: s2Done, unlocked: s1Done && !isRealGuest },
-                { el: lvl3, done: s3Done, unlocked: s2Done && !isRealGuest },
-                { el: lvl4, done: s4Done, unlocked: s3Done && !isRealGuest },
-                { el: lvl5, done: s5Done, unlocked: s4Done && !isRealGuest },
-            ];
-
-            for (const { el, done, unlocked } of unlockedAndIncomplete) {
-                if (!done && unlocked) return setCurrent(el);
+            const progress = [s1Done, s2Done, s3Done, s4Done, s5Done];
+            
+            for (let i = 0; i < allLevels.length; i++) {
+                // If this level is not done and it's either lvl 1 or the previous was done
+                const prevDone = i === 0 || progress[i-1];
+                
+                if (!progress[i] && prevDone) {
+                    // Only mark as visual "current" if it's not a guest-blocked level
+                    if (i === 0 || !isGuest()) {
+                        setCurrent(allLevels[i]);
+                    }
+                    return; // Stop once we find the first incomplete level
+                }
             }
 
-            document.getElementById("allCompleteBanner").style.display = "block";
+            // All complete
+            if (progress.every(p => p === true) && !isGuest()) {
+                const banner = document.getElementById("allCompleteBanner");
+                if (banner) banner.style.display = "block";
+            }
         }
 
         setCurrentLevel();
-
-        // 🧪 Debug log
-        console.log({
-            userEmail,
-            isRealGuest,
-            s1Done, s2Done, s3Done, s4Done, s5Done
-        });
     </script>
 
 </body>
