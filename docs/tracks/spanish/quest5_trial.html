@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -8,9 +9,7 @@
     <link rel="stylesheet" href="../../css/quest-style.css">
 
     <style>
-        .arena {
-            text-align: center;
-        }
+        .arena { text-align: center; }
 
         .hp-bar {
             width: 100%;
@@ -19,9 +18,7 @@
             margin: 10px 0;
         }
 
-        .hp-fill {
-            height: 100%;
-        }
+        .hp-fill { height: 100%; }
 
         #boss-fill { background: red; }
         #player-fill { background: green; }
@@ -62,13 +59,43 @@
 
             const QUESTIONS = [
                 { q: "Yo soy estudiante → ?", a: "I am a student", o: ["I am a student", "You are a student", "They are students"] },
-                { q: "Tú eres mi amigo → ?", a: "You are my friend", o: ["You are my friend", "I am your friend", "He is my friend"] },
-                { q: "Ella tiene un perro → ?", a: "She has a dog", o: ["She has a dog", "She likes dogs", "She sees a dog"] }
+                { q: "Tú eres mi amigo → ?", a: "You are my friend", o: ["You are my friend", "I am your friend", "He is my friend"] }, 
+                { q: "Ella tiene un perro → ?", a: "She has a dog", o: ["She has a dog", "She likes dogs", "She sees a dog"] }, 
+                { q: "Nosotros somos felices → ?", a: "We are happy", o: ["We are happy", "They are happy", "I am happy"] }, 
+                { q: "Ellos tienen libros → ?", a: "They have books", o: ["They have books", "We have books", "They read books"] }, 
+                { q: "Yo tengo agua → ?", a: "I have water", o: ["I have water", "You have water", "I drink water"] }, 
+                { q: "La casa es grande → ?", a: "The house is big", o: ["The house is big", "The house is small", "The house was big"] }, 
+                { q: "El perro es rápido → ?", a: "The dog is fast", o: ["The dog is fast", "The dog runs fast", "The dog was fast"] }, 
+                { q: "Ella está feliz → ?", a: "She is happy", o: ["She is happy", "She was happy", "She feels happy"] }, 
+                { q: "Nosotros estamos listos → ?", a: "We are ready", o: ["We are ready", "They are ready", "We were ready"] },
             ];
 
             let i = 0;
             let boss = 100;
             let player = 100;
+
+            /* ---------- BACKEND SAVE ---------- */
+            async function saveProgress(questName) {
+                const email = localStorage.getItem("userEmail");
+                if (!email) return;
+
+                try {
+                    await fetch("http://localhost:5000/progress", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            email: email,
+                            quest: questName
+                        })
+                    });
+
+                    console.log("Progress saved");
+                } catch (err) {
+                    console.log("Progress save failed");
+                }
+            }
 
             function updateBars() {
                 document.getElementById("boss-fill").style.width = boss + "%";
@@ -89,36 +116,47 @@
                     btn.className = "option-btn";
                     btn.innerText = opt;
 
-                    btn.onclick = () => {
-                        if (opt === q.a) {
-                            boss -= 30;
-                            i++;
-                            document.getElementById("feedback").innerText = "Correct!";
-                        } else {
-                            player -= 20;
-                            document.getElementById("feedback").innerText = "Wrong!";
-                        }
-
-                        updateBars();
-
-                        if (boss <= 0) return win();
-                        if (player <= 0) return lose();
-
-                        setTimeout(loadQ, 600);
-                    };
+                    btn.onclick = () => handleAnswer(opt, q);
 
                     optDiv.appendChild(btn);
                 });
             }
 
+            function handleAnswer(opt, q) {
+
+                if (opt === q.a) {
+                    boss = Math.max(0, boss - 30);
+                    i++;
+                    document.getElementById("feedback").innerText = "💥 Correct hit!";
+                } else {
+                    player = Math.max(0, player - 20);
+                    document.getElementById("feedback").innerText = "⚠️ Wrong!";
+                }
+
+                updateBars();
+
+                if (boss <= 0) return win();
+                if (player <= 0) return lose();
+
+                setTimeout(loadQ, 600);
+            }
+
             function win() {
+
+                // ✅ COMPLETE QUEST
                 localStorage.setItem("s5Complete", "1");
-                document.getElementById("feedback").innerText = "You defeated the boss!";
+
+                // ✅ BACKEND SAVE
+                saveProgress("Spanish-quest5");
+
+                document.getElementById("feedback").innerText = "🏆 You defeated the boss!";
+
                 setTimeout(() => location.href = "spanish-level.html", 1200);
             }
 
             function lose() {
-                document.getElementById("feedback").innerText = "You lost! Try again.";
+                document.getElementById("feedback").innerText = "💀 You lost! Try again.";
+
                 setTimeout(() => location.href = "spanish-level.html", 1200);
             }
 
