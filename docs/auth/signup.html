@@ -9,7 +9,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <title>QuestEd | Sign Up</title>
-    <link rel="stylesheet" href="css/quest-style.css" />
+    <link rel="stylesheet" href="../css/quest-style.css" />
     <link rel="stylesheet" href="../css/auth.css">
 </head>
 
@@ -49,7 +49,7 @@
         <div class="card">
             <div id="msg" class="msg"></div>
 
-            <form class="form" onsubmit="signup(event)">
+            <form class="form" onsubmit="signup(event); return false;">
                 <div class="input-group">
                     <input class="input" id="name" placeholder=" " required />
                     <label for="name">Player Name</label>
