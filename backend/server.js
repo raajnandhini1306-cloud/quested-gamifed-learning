@@ -8,7 +8,8 @@ const PORT = 5000;
 app.use(cors());
 app.use(express.json());
 
-const DATA_FILE = "./data.json";
+const path = require("path");
+const DATA_FILE = path.join(__dirname, "data.json");
 
 /* ---------- Helper Functions ---------- */
 
