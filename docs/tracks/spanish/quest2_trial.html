@@ -1,279 +1,11 @@
-<<<<<<< HEAD:docs/tracks/spanish/quest2_trial.html
-﻿<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8" />
-    <title>Level 2: Spanish Number Match-Up</title>
-    <link rel="stylesheet" href="../../css/quest-style.css" />
-
-    <style>
-        .match-container {
-            display: flex;
-            justify-content: space-around;
-            gap: 30px;
-            margin-top: 22px;
-            flex-wrap: wrap;
-        }
-
-        .column {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            min-width: 260px;
-        }
-
-        .box {
-            padding: 14px 18px;
-            background: #3e2712;
-            color: #f1c40f;
-            border: 2px solid #f1c40f;
-            cursor: pointer;
-            border-radius: 10px;
-            text-align: center;
-            font-weight: 900;
-            user-select: none;
-            transition: transform 0.08s ease, opacity 0.2s ease;
-            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-        }
-
-        .box:hover {
-            transform: translateY(-1px);
-        }
-
-        .box.selected {
-            background: #f1c40f;
-            color: #3e2712;
-            transform: scale(1.02);
-        }
-
-        .box.matched {
-            opacity: 0.35;
-            cursor: default;
-            pointer-events: none;
-        }
-
-
-
-        .shake {
-            animation: shake 0.22s linear;
-        }
-
-        @keyframes shake {
-            0% {
-                transform: translateX(0);
-            }
-
-            25% {
-                transform: translateX(-5px);
-            }
-
-            50% {
-                transform: translateX(5px);
-            }
-
-            75% {
-                transform: translateX(-4px);
-            }
-
-            100% {
-                transform: translateX(0);
-            }
-        }
-
-        #feedback {
-            margin-top: 16px;
-            font-weight: 900;
-        }
-
-        @media(max-width: 800px) {
-            .column {
-                width: 100%;
-            }
-        }
-    </style>
-</head>
-
-<body>
-    <div class="parchment">
-        <h2>Quest: Match Spanish Numbers to Their Digits</h2>
-        <p>Click a <b>Spanish Word</b>, then click its correct <b>English Number</b>.</p>
-
-        <div class="hud">
-            <div class="task-chip">Match</div>
-            <div class="progress-wrap">
-                <div class="progress-text">
-                    <span id="matchedText">Matched: 0 / 0</span>
-                    <span id="tipText">Tip: “uno” = 1</span>
-                </div>
-                <div class="progress-bar">
-                    <div class="progress-fill" id="progressFill"></div>
-                </div>
-            </div>
-        </div>
-
-        <div class="match-container">
-            <div class="column" id="valuesCol"></div>
-            <div class="column" id="typesCol"></div>
-        </div>
-
-        <p id="feedback"></p>
-        <div class="btn-row">
-            <button class="game-btn btn-secondary" onclick="location.href='spanish-level.html'">Back to Map</button>
-        </div>
-    </div>
-
-    <script>
-        const PAIRS = [
-            { value: "uno", type: "1" },
-            { value: "dos", type: "2" },
-            { value: "tres", type: "3" },
-            { value: "cuatro", type: "4" },
-            { value: "cinco", type: "5" },
-            { value: "seis", type: "6" },
-            { value: "siete", type: "7" },
-            { value: "ocho", type: "8" },
-            { value: "nueve", type: "9" },
-            { value: "diez", type: "10" }
-        ];
-
-        const valuesCol = document.getElementById("valuesCol");
-        const typesCol = document.getElementById("typesCol");
-        const feedback = document.getElementById("feedback");
-
-        const matchedText = document.getElementById("matchedText");
-        const progressFill = document.getElementById("progressFill");
-
-        let selectedValue = null;
-        let matched = 0;
-        const total = PAIRS.length;
-
-        function shuffle(arr) {
-            for (let i = arr.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [arr[i], arr[j]] = [arr[j], arr[i]];
-            }
-            return arr;
-        }
-
-        function updateProgress() {
-            matchedText.innerText = `Matched: ${matched} / ${total}`;
-            progressFill.style.width = Math.round((matched / total) * 100) + "%";
-        }
-
-        function setFeedback(msg, ok = true) {
-            feedback.style.color = ok ? "green" : "red";
-            feedback.innerText = msg;
-        }
-
-        function makeBox(text, pairId, kind) {
-            const div = document.createElement("div");
-            div.className = "box";
-            div.dataset.pair = pairId;
-            div.dataset.kind = kind;
-            div.innerText = text;
-            return div;
-        }
-
-        function resetSelection() {
-            if (selectedValue) selectedValue.classList.remove("selected");
-            selectedValue = null;
-        }
-
-        function buildGame() {
-            valuesCol.innerHTML = "";
-            typesCol.innerHTML = "";
-
-            matched = 0;
-            updateProgress();
-            setFeedback("Start matching! âš¡", true);
-
-            const valuesList = PAIRS.map((p, idx) => ({ txt: p.value, id: idx + 1 }));
-            const typesList = PAIRS.map((p, idx) => ({ txt: p.type, id: idx + 1 }));
-
-            shuffle(valuesList);
-            shuffle(typesList);
-
-            valuesList.forEach(item => {
-                const el = makeBox(item.txt, item.id, "value");
-                el.onclick = () => selectValue(el);
-                valuesCol.appendChild(el);
-            });
-
-            typesList.forEach(item => {
-                const el = makeBox(item.txt, item.id, "type");
-                el.onclick = () => selectType(el);
-                typesCol.appendChild(el);
-            });
-        }
-
-        function selectValue(el) {
-            if (el.classList.contains("matched")) return;
-
-            resetSelection();
-            selectedValue = el;
-            el.classList.add("selected");
-            setFeedback("Now match it with the correct number ðŸ‘‰", true);
-        }
-
-        function selectType(el) {
-            if (el.classList.contains("matched")) return;
-
-            if (!selectedValue) {
-                setFeedback("Select a Spanish word first!", false);
-                valuesCol.classList.add("shake");
-                setTimeout(() => valuesCol.classList.remove("shake"), 250);
-                return;
-            }
-
-            if (selectedValue.dataset.pair === el.dataset.pair) {
-                selectedValue.classList.add("matched");
-                el.classList.add("matched");
-
-                matched++;
-                updateProgress();
-
-                setFeedback("âœ¨ Correct Match!", true);
-                resetSelection();
-
-                if (matched === total) {
-                    setFeedback("ðŸ† All Matched! Great job!", true);
-
-                    localStorage.setItem("s2Complete", "1");
-
-                    setTimeout(() => {
-                        location.href = "spanish-level.html";
-                    }, 1500);
-                }
-
-            } else {
-                setFeedback("âŒ Wrong match! Try again.", false);
-
-                selectedValue.classList.add("shake");
-                el.classList.add("shake");
-
-                setTimeout(() => {
-                    selectedValue.classList.remove("shake");
-                    el.classList.remove("shake");
-                }, 250);
-
-                resetSelection();
-            }
-        }
-
-        buildGame();
-    </script>
-
-</body>
-
-=======
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8" />
+    <meta charset="UTF-8">
     <title>Level 2: Spanish Number Match-Up</title>
-    <link rel="stylesheet" href="css/quest-style.css" />
+
+    <link rel="stylesheet" href="../../css/quest-style.css">
 
     <style>
         .match-container {
@@ -299,110 +31,31 @@
             cursor: pointer;
             border-radius: 10px;
             text-align: center;
-            font-weight: 900;
-            user-select: none;
-            transition: transform 0.08s ease, opacity 0.2s ease;
-            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-        }
-
-        .box:hover {
-            transform: translateY(-1px);
+            font-weight: bold;
         }
 
         .box.selected {
             background: #f1c40f;
             color: #3e2712;
-            transform: scale(1.02);
         }
 
         .box.matched {
-            opacity: 0.35;
-            cursor: default;
+            opacity: 0.3;
             pointer-events: none;
-        }
-
-        .hud {
-            margin-top: 12px;
-        }
-
-        .hud-top {
-            display: flex;
-            justify-content: space-between;
-            gap: 12px;
-            font-weight: 900;
-            margin-bottom: 8px;
-            opacity: 0.9;
-        }
-
-        .progress-bar {
-            height: 12px;
-            width: 100%;
-            border-radius: 999px;
-            background: rgba(0, 0, 0, 0.15);
-            overflow: hidden;
-            box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.12);
-        }
-
-        .progress-fill {
-            height: 100%;
-            width: 0%;
-            transition: width 0.25s ease;
-            background: linear-gradient(90deg, #16a34a, #22c55e);
-        }
-
-        .shake {
-            animation: shake 0.22s linear;
-        }
-
-        @keyframes shake {
-            0% {
-                transform: translateX(0);
-            }
-
-            25% {
-                transform: translateX(-5px);
-            }
-
-            50% {
-                transform: translateX(5px);
-            }
-
-            75% {
-                transform: translateX(-4px);
-            }
-
-            100% {
-                transform: translateX(0);
-            }
         }
 
         #feedback {
             margin-top: 16px;
-            font-weight: 900;
-        }
-
-        @media(max-width: 800px) {
-            .column {
-                width: 100%;
-            }
+            font-weight: bold;
         }
     </style>
 </head>
 
 <body>
-    <div class="parchment">
-        <h2>Quest: Match Spanish Numbers to Their Digits</h2>
-        <p>Click a <b>Spanish Word</b>, then click its correct <b>English Number</b>.</p>
 
-        <div class="hud">
-            <div class="hud-top">
-                <span id="matchedText">Matched: 0 / 0</span>
-                <span id="tipText">Tip: “uno” = 1</span>
-            </div>
-            <div class="progress-bar">
-                <div class="progress-fill" id="progressFill"></div>
-            </div>
-        </div>
+    <div class="parchment">
+        <h2>Match Spanish Numbers</h2>
+        <p>Select a Spanish word, then match its number.</p>
 
         <div class="match-container">
             <div class="column" id="valuesCol"></div>
@@ -410,150 +63,101 @@
         </div>
 
         <p id="feedback"></p>
+
+        <button onclick="location.href='spanish-level.html'">Back to Map</button>
     </div>
-    <script src="js/auth.js"></script>
+
     <script>
-        const PAIRS = [
-            { value: "uno", type: "1" },
-            { value: "dos", type: "2" },
-            { value: "tres", type: "3" },
-            { value: "cuatro", type: "4" },
-            { value: "cinco", type: "5" },
-            { value: "seis", type: "6" },
-            { value: "siete", type: "7" },
-            { value: "ocho", type: "8" },
-            { value: "nueve", type: "9" },
-            { value: "diez", type: "10" }
-        ];
+        document.addEventListener("DOMContentLoaded", () => {
 
-        const valuesCol = document.getElementById("valuesCol");
-        const typesCol = document.getElementById("typesCol");
-        const feedback = document.getElementById("feedback");
+            const PAIRS = [
+                { value: "uno", type: "1" },
+                { value: "dos", type: "2" },
+                { value: "tres", type: "3" },
+                { value: "cuatro", type: "4" },
+                { value: "cinco", type: "5" },
+                { value: "seis", type: "6" },
+                { value: "siete", type: "7" },
+                { value: "ocho", type: "8" },
+                { value: "nueve", type: "9" },
+                { value: "diez", type: "10" }
+            ];
 
-        const matchedText = document.getElementById("matchedText");
-        const progressFill = document.getElementById("progressFill");
+            const valuesCol = document.getElementById("valuesCol");
+            const typesCol = document.getElementById("typesCol");
+            const feedback = document.getElementById("feedback");
 
-        let selectedValue = null;
-        let matched = 0;
-        const total = PAIRS.length;
+            let selected = null;
+            let matched = 0;
 
-        function shuffle(arr) {
-            for (let i = arr.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [arr[i], arr[j]] = [arr[j], arr[i]];
-            }
-            return arr;
-        }
-
-        function updateProgress() {
-            matchedText.innerText = `Matched: ${matched} / ${total}`;
-            progressFill.style.width = Math.round((matched / total) * 100) + "%";
-        }
-
-        function setFeedback(msg, ok = true) {
-            feedback.style.color = ok ? "green" : "red";
-            feedback.innerText = msg;
-        }
-
-        function makeBox(text, pairId, kind) {
-            const div = document.createElement("div");
-            div.className = "box";
-            div.dataset.pair = pairId;
-            div.dataset.kind = kind;
-            div.innerText = text;
-            return div;
-        }
-
-        function resetSelection() {
-            if (selectedValue) selectedValue.classList.remove("selected");
-            selectedValue = null;
-        }
-
-        function buildGame() {
-            valuesCol.innerHTML = "";
-            typesCol.innerHTML = "";
-
-            matched = 0;
-            updateProgress();
-            setFeedback("Start matching! ⚡", true);
-
-            const valuesList = PAIRS.map((p, idx) => ({ txt: p.value, id: idx + 1 }));
-            const typesList = PAIRS.map((p, idx) => ({ txt: p.type, id: idx + 1 }));
-
-            shuffle(valuesList);
-            shuffle(typesList);
-
-            valuesList.forEach(item => {
-                const el = makeBox(item.txt, item.id, "value");
-                el.onclick = () => selectValue(el);
-                valuesCol.appendChild(el);
-            });
-
-            typesList.forEach(item => {
-                const el = makeBox(item.txt, item.id, "type");
-                el.onclick = () => selectType(el);
-                typesCol.appendChild(el);
-            });
-        }
-
-        function selectValue(el) {
-            if (el.classList.contains("matched")) return;
-
-            resetSelection();
-            selectedValue = el;
-            el.classList.add("selected");
-            setFeedback("Now match it with the correct number 👉", true);
-        }
-
-        function selectType(el) {
-            if (el.classList.contains("matched")) return;
-
-            if (!selectedValue) {
-                setFeedback("Select a Spanish word first!", false);
-                valuesCol.classList.add("shake");
-                setTimeout(() => valuesCol.classList.remove("shake"), 250);
-                return;
+            function shuffle(arr) {
+                return arr.sort(() => Math.random() - 0.5);
             }
 
-            if (selectedValue.dataset.pair === el.dataset.pair) {
-                selectedValue.classList.add("matched");
-                el.classList.add("matched");
+            function buildGame() {
+                const values = shuffle([...PAIRS]);
+                const types = shuffle([...PAIRS]);
 
-                matched++;
-                updateProgress();
+                values.forEach((item, i) => {
+                    const el = document.createElement("div");
+                    el.className = "box";
+                    el.textContent = item.value;
+                    el.dataset.id = i;
+                    el.onclick = () => selectValue(el, item);
+                    valuesCol.appendChild(el);
+                });
 
-                setFeedback("✨ Correct Match!", true);
-                resetSelection();
+                types.forEach((item, i) => {
+                    const el = document.createElement("div");
+                    el.className = "box";
+                    el.textContent = item.type;
+                    el.dataset.id = i;
+                    el.onclick = () => selectType(el, item);
+                    typesCol.appendChild(el);
+                });
+            }
 
-                if (matched === total) {
-                    setFeedback("🏆 All Matched! Great job!", true);
+            function selectValue(el, item) {
+                selected = { el, item };
+                document.querySelectorAll(".box").forEach(b => b.classList.remove("selected"));
+                el.classList.add("selected");
+                feedback.textContent = "Now pick the number!";
+            }
 
-                    localStorage.setItem("s2Complete", "1");
-                    saveProgress("Spanish-quest2")
-                    setTimeout(() => {
-                        location.href = "spanish-level.html";
-                    }, 1500);
+            function selectType(el, item) {
+                if (!selected) {
+                    feedback.textContent = "Pick a word first!";
+                    return;
                 }
 
-            } else {
-                setFeedback("❌ Wrong match! Try again.", false);
+                if (selected.item.type === item.type) {
+                    selected.el.classList.add("matched");
+                    el.classList.add("matched");
 
-                selectedValue.classList.add("shake");
-                el.classList.add("shake");
+                    matched++;
+                    feedback.textContent = "Correct!";
 
-                setTimeout(() => {
-                    selectedValue.classList.remove("shake");
-                    el.classList.remove("shake");
-                }, 250);
+                    if (matched === PAIRS.length) {
+                        feedback.textContent = "All matched!";
 
-                resetSelection();
+                        localStorage.setItem("s2Complete", "1");
+
+                        setTimeout(() => {
+                            location.href = "spanish-level.html";
+                        }, 1200);
+                    }
+                } else {
+                    feedback.textContent = "Wrong! Try again.";
+                }
+
+                selected = null;
+                document.querySelectorAll(".box").forEach(b => b.classList.remove("selected"));
             }
-        }
 
-        buildGame();
+            buildGame();
+        });
     </script>
 
 </body>
 
->>>>>>> b59e43b (Backend Commit - QuestED gamified learning platform):docs/quest2_trial.html
 </html>
