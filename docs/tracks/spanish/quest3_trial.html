@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -32,8 +33,6 @@
             font-weight: 700;
         }
 
-
-
         .btn-la {
             background: #e74c3c;
             color: white;
@@ -51,23 +50,10 @@
         }
 
         @keyframes shake {
-
-            0%,
-            100% {
-                transform: translateX(0);
-            }
-
-            25% {
-                transform: translateX(-6px);
-            }
-
-            50% {
-                transform: translateX(6px);
-            }
-
-            75% {
-                transform: translateX(-4px);
-            }
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-6px); }
+            50% { transform: translateX(6px); }
+            75% { transform: translateX(-4px); }
         }
     </style>
 </head>
@@ -113,6 +99,29 @@
             const meaningDisplay = document.getElementById("meaningDisplay");
             const feedback = document.getElementById("feedback");
 
+            /* ---------- BACKEND SAVE ---------- */
+            async function saveProgress(questName) {
+                const email = localStorage.getItem("userEmail");
+                if (!email) return;
+
+                try {
+                    await fetch("http://localhost:5000/progress", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            email: email,
+                            quest: questName
+                        })
+                    });
+
+                    console.log("Progress saved");
+                } catch (err) {
+                    console.log("Progress save failed");
+                }
+            }
+
             function loadWord() {
                 const w = WORDS[index];
                 wordDisplay.textContent = w.word;
@@ -124,24 +133,32 @@
                 const correct = WORDS[index].gender;
 
                 if (choice === correct) {
-                    feedback.textContent = "Correct!";
+                    feedback.textContent = "✨ Correct!";
                     feedback.style.color = "green";
 
                     index++;
 
                     if (index >= WORDS.length) {
+
+                        // ✅ COMPLETE QUEST
                         localStorage.setItem("s3Complete", "1");
+
+                        // ✅ BACKEND SAVE (same as Python)
+                        saveProgress("Spanish-quest3");
+
+                        feedback.textContent = "🏆 Level 3 Complete!";
 
                         setTimeout(() => {
                             location.href = "spanish-level.html";
                         }, 1200);
+
                         return;
                     }
 
                     setTimeout(loadWord, 400);
 
                 } else {
-                    feedback.textContent = "Wrong! Try again.";
+                    feedback.textContent = "❌ Wrong! Try again.";
                     feedback.style.color = "red";
                 }
             };
@@ -153,3 +170,4 @@
 </body>
 
 </html>
+
