@@ -65,17 +65,14 @@
     <script>
         document.addEventListener("DOMContentLoaded", () => {
 
-            // 🌟 Guest mode (frontend only)
             const isGuest = localStorage.getItem("guest") === "1";
 
-            // Progress
             const s1Done = localStorage.getItem("s1Complete") === "1";
             const s2Done = localStorage.getItem("s2Complete") === "1";
             const s3Done = localStorage.getItem("s3Complete") === "1";
             const s4Done = localStorage.getItem("s4Complete") === "1";
             const s5Done = localStorage.getItem("s5Complete") === "1";
 
-            // Elements
             const lvl1 = document.getElementById("lvl1");
             const lvl2 = document.getElementById("lvl2");
             const lvl3 = document.getElementById("lvl3");
@@ -114,45 +111,57 @@
                 el.classList.remove("locked");
             }
 
-            // Level 1 always open
+            // Level 1 always accessible
             makeClickable(lvl1);
 
-            // Mark completed
+            // Mark completed levels
             if (s1Done) markCompleted(lvl1);
             if (s2Done) markCompleted(lvl2);
             if (s3Done) markCompleted(lvl3);
             if (s4Done) markCompleted(lvl4);
             if (s5Done) markCompleted(lvl5);
 
-            // 🔒 Guest restriction
+            // 🔒 GUEST MODE (FULL BLOCK)
             if (isGuest) {
+
                 [lvl2, lvl3, lvl4, lvl5].forEach(el => {
+
                     el.classList.add("locked");
-                    el.onclick = () => {
+
+                    // 💥 Remove ANY previous click logic
+                    el.onclick = null;
+
+                    // Add guest restriction click
+                    el.addEventListener("click", () => {
                         if (confirm("🔒 Guest Mode\n\nOnly Level 1 is available.\n\nSign up to unlock all levels?")) {
                             location.href = "../../auth/signup.html";
                         }
-                    };
+                    });
+
                 });
+
             } else {
+
                 // Normal progression
                 if (s1Done) unlockWithAnim(lvl2); else lock(lvl2);
                 if (s2Done) unlockWithAnim(lvl3); else lock(lvl3);
                 if (s3Done) unlockWithAnim(lvl4); else lock(lvl4);
                 if (s4Done) unlockWithAnim(lvl5); else lock(lvl5);
+
             }
 
-            // Current level
+            // Current level logic
             function setCurrentLevel() {
                 [lvl1, lvl2, lvl3, lvl4, lvl5].forEach(el => el.classList.remove("current"));
 
                 if (!s1Done) return setCurrent(lvl1);
-                if (!s2Done && !isGuest) return setCurrent(lvl2);
-                if (!s3Done && !isGuest) return setCurrent(lvl3);
-                if (!s4Done && !isGuest) return setCurrent(lvl4);
-                if (!s5Done && !isGuest) return setCurrent(lvl5);
 
                 if (!isGuest) {
+                    if (!s2Done) return setCurrent(lvl2);
+                    if (!s3Done) return setCurrent(lvl3);
+                    if (!s4Done) return setCurrent(lvl4);
+                    if (!s5Done) return setCurrent(lvl5);
+
                     document.getElementById("allCompleteBanner").style.display = "block";
 
                     setTimeout(() => {
