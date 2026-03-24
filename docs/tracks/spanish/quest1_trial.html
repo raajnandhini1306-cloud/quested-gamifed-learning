@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -53,67 +54,69 @@
                 ? parseInt(localStorage.getItem('spanishQuestC'))
                 : 0;
 
-    const tasks = [
-        {
-            instr: `🌅 You awaken in a mysterious land…<br>
-            A villager greets you.<br>
-            🗣️ Say hello → <strong>hola</strong>`,
-            answer: 'hola'
-        },
-        {
-            instr: `🙏 The villager smiles warmly.<br>
-            Time to show gratitude.<br>
-            💬 Say thank you → <strong>gracias</strong>`,
-            answer: 'gracias'
-        },
-        {
-            instr: `🌇 The sun begins to set…<br>
-            You must part ways.<br>
-            👋 Say goodbye → <strong>adios</strong>`,
-            answer: 'adios'
-        },
-        {
-            instr: `🤝 You meet a companion on your journey.<br>
-            🧍 What is "friend" in Spanish?<br>
-            → <strong>amigo</strong>`,
-            answer: 'amigo'
-        },
-        {
-            instr: `💧 You feel thirsty after traveling…<br>
-            🥤 Ask for water → <strong>agua</strong>`,
-            answer: 'agua'
-        },
-        {
-            instr: `🏡 You arrive at a cozy shelter.<br>
-            🏠 What is "house" in Spanish?<br>
-            → <strong>casa</strong>`,
-            answer: 'casa'
-        },
-        {
-            instr: `🌹 You see a glowing red flower.<br>
-            🎨 What is "red" in Spanish?<br>
-            → <strong>rojo</strong>`,
-            answer: 'rojo'
-        },
-        {
-            instr: `🍲 A meal is prepared for you.<br>
-            🍽️ What is "food" in Spanish?<br>
-            → <strong>comida</strong>`,
-            answer: 'comida'
-        },
-        {
-            instr: `😊 You feel joy after your journey.<br>
-            💫 What is "happy" in Spanish?<br>
-            → <strong>feliz</strong>`,
-            answer: 'feliz'
-        },
-        {
-            instr: `🎓 You have learned so much…<br>
-            📖 What is "learned" in Spanish?<br>
-            → <strong>aprendido</strong>`,
-            answer: 'aprendido'
-        }
-    ];
+const tasks = [
+    {
+        instr: `🌅 You awaken in a mysterious land…<br>
+        A villager greets you.<br>
+        🗣️ Say hello → <strong>hola</strong>`,
+        answer: 'hola'
+    },
+    {
+        instr: `🙏 The villager smiles warmly.<br>
+        Time to show gratitude.<br>
+        💬 Say thank you → <strong>gracias</strong>`,
+        answer: 'gracias'
+    },
+    {
+        instr: `🌇 The sun begins to set…<br>
+        You must part ways.<br>
+        👋 Say goodbye → <strong>adios</strong>`,
+        answer: 'adios'
+    },
+    {
+        instr: `🤝 You meet a companion on your journey.<br>
+        🧍 What is "friend" in Spanish?<br>
+        → <strong>amigo</strong>`,
+        answer: 'amigo'
+    },
+    {
+        instr: `💧 You feel thirsty after traveling…<br>
+        🥤 Ask for water → <strong>agua</strong>`,
+        answer: 'agua'
+    },
+    {
+        instr: `🏡 You arrive at a cozy shelter.<br>
+        🏠 What is "house" in Spanish?<br>
+        → <strong>casa</strong>`,
+        answer: 'casa'
+    },
+    {
+        instr: `🌹 You see a glowing red flower.<br>
+        🎨 What is "red" in Spanish?<br>
+        → <strong>rojo</strong>`,
+        answer: 'rojo'
+    },
+    {
+        instr: `🍲 A meal is prepared for you.<br>
+        🍽️ What is "food" in Spanish?<br>
+        → <strong>comida</strong>`,
+        answer: 'comida'
+    },
+    {
+        instr: `😊 You feel joy after your journey.<br>
+        💫 What is "happy" in Spanish?<br>
+        → <strong>feliz</strong>`,
+        answer: 'feliz'
+    },
+    {
+        instr: `🎓 You have learned so much…<br>
+        📖 What is "learned" in Spanish?<br>
+        → <strong>aprendido</strong>`,
+        answer: 'aprendido'
+    }
+];
+
+            const taskChip = document.getElementById("taskChip");
             const taskInstr = document.getElementById("taskInstr");
             const progressFill = document.getElementById("progressFill");
             const progressText = document.getElementById("progressText");
@@ -124,24 +127,51 @@
             const submitBtn = document.getElementById("submitBtn");
             const resetBtn = document.getElementById("resetBtn");
 
+            /* ---------- BACKEND SAVE ---------- */
+            async function saveProgress(questName) {
+                const email = localStorage.getItem("userEmail");
+                if (!email) return;
+
+                try {
+                    await fetch("http://localhost:5000/progress", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                            email: email,
+                            quest: questName
+                        })
+                    });
+
+                    console.log("Progress saved");
+                } catch (err) {
+                    console.log("Progress save failed");
+                }
+            }
+
+            /* ---------- UI UPDATE ---------- */
             function updateHUD() {
                 const percent = Math.round((currentTask / tasks.length) * 100);
-                taskChip.textContent = `Task ${currentTask + 1}`;
+                taskChip.textContent = `Task ${Math.min(currentTask + 1, tasks.length)}`;
                 progressText.textContent = `Progress: ${percent}%`;
                 taskCount.textContent = `${Math.min(currentTask + 1, tasks.length)} / ${tasks.length}`;
                 progressFill.style.width = percent + "%";
             }
 
+            /* ---------- LOAD TASK ---------- */
             function loadTask() {
                 if (currentTask >= tasks.length) {
-                    taskInstr.innerHTML = "🎉 Quest Completed!";
-                    feedback.textContent = "Returning to map...";
 
                     localStorage.setItem("s1Complete", "1");
+                    localStorage.setItem("spanishQuestC", 0);
+
+                    saveProgress("Spanish-quest1");
+
+                    taskInstr.innerHTML = "🏆 Quest Completed!";
+                    feedback.textContent = "Returning to map...";
 
                     setTimeout(() => {
                         location.href = "spanish-level.html";
-                    }, 1500);
+                    }, 1200);
 
                     return;
                 }
@@ -153,26 +183,41 @@
                 nextBtn.style.display = "none";
             }
 
+            /* ---------- CHECK ANSWER ---------- */
             function checkAnswer() {
                 const val = userAnswer.value.trim().toLowerCase();
+                if (!val) return;
 
-                if (val === tasks[currentTask].answer) {
-                    feedback.textContent = "✅ Correct!";
+                if (val === tasks[currentTask].answer.toLowerCase()) {
+
+                    feedback.textContent = "✨ Correct!";
                     nextBtn.style.display = "inline-block";
 
                     currentTask++;
                     localStorage.setItem("spanishQuestC", currentTask);
+
+                    if (currentTask >= tasks.length) {
+                        loadTask();
+                    }
+
                 } else {
                     feedback.textContent = "❌ Try again!";
                 }
             }
 
+            /* ---------- EVENTS ---------- */
             submitBtn.addEventListener("click", checkAnswer);
+
+            userAnswer.addEventListener("keydown", (e) => {
+                if (e.key === "Enter") checkAnswer();
+            });
+
             nextBtn.addEventListener("click", loadTask);
 
             resetBtn.addEventListener("click", () => {
                 currentTask = 0;
                 localStorage.removeItem("spanishQuestC");
+                localStorage.removeItem("s1Complete");
                 loadTask();
             });
 
@@ -181,5 +226,4 @@
     </script>
 
 </body>
-
 </html>
