@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -62,110 +63,121 @@
 
     </div>
 
+    <!-- AUTH -->
+    <script src="../../js/auth.js"></script>
+
     <script>
-        document.addEventListener("DOMContentLoaded", () => {
+        console.log("📍 Spanish Level Page Loaded");
 
-            const isGuest = localStorage.getItem("guest") === "1";
+        // SAME AS PYTHON
+        checkAuth('../../auth/login.html');
 
-            const s1Done = localStorage.getItem("s1Complete") === "1";
-            const s2Done = localStorage.getItem("s2Complete") === "1";
-            const s3Done = localStorage.getItem("s3Complete") === "1";
-            const s4Done = localStorage.getItem("s4Complete") === "1";
-            const s5Done = localStorage.getItem("s5Complete") === "1";
+        const s1Done = localStorage.getItem("s1Complete") === "1";
+        const s2Done = localStorage.getItem("s2Complete") === "1";
+        const s3Done = localStorage.getItem("s3Complete") === "1";
+        const s4Done = localStorage.getItem("s4Complete") === "1";
+        const s5Done = localStorage.getItem("s5Complete") === "1";
 
-            const lvl1 = document.getElementById("lvl1");
-            const lvl2 = document.getElementById("lvl2");
-            const lvl3 = document.getElementById("lvl3");
-            const lvl4 = document.getElementById("lvl4");
-            const lvl5 = document.getElementById("lvl5");
+        const lvl1 = document.getElementById("lvl1");
+        const lvl2 = document.getElementById("lvl2");
+        const lvl3 = document.getElementById("lvl3");
+        const lvl4 = document.getElementById("lvl4");
+        const lvl5 = document.getElementById("lvl5");
 
-            function makeClickable(el) {
-                el.classList.remove("locked");
-                el.onclick = () => {
-                    const href = el.dataset.href;
-                    if (href) location.href = href;
+        function makeClickable(el) {
+            if (!el) return;
+            el.classList.remove("locked");
+            el.onclick = () => {
+                const href = el.dataset.href;
+                if (href) location.href = href;
+            };
+        }
+
+        function lock(el) {
+            if (!el) return;
+            el.classList.add("locked");
+            el.onclick = () => {
+                alert("🔒 Complete the previous level first!");
+            };
+        }
+
+        function markCompleted(el) {
+            if (!el) return;
+            el.classList.add("completed");
+            el.classList.remove("current");
+        }
+
+        function unlockWithAnim(el) {
+            if (!el) return;
+            el.classList.remove("locked");
+            el.classList.add("unlocking");
+            setTimeout(() => el.classList.remove("unlocking"), 700);
+            makeClickable(el);
+        }
+
+        function setCurrent(el) {
+            if (!el) return;
+            el.classList.add("current");
+            el.classList.remove("locked");
+        }
+
+        // Level 1 always clickable
+        makeClickable(lvl1);
+
+        // Completed styling
+        if (s1Done) markCompleted(lvl1);
+        if (s2Done) markCompleted(lvl2);
+        if (s3Done) markCompleted(lvl3);
+        if (s4Done) markCompleted(lvl4);
+        if (s5Done) markCompleted(lvl5);
+
+        // SAME AS PYTHON (IMPORTANT FIX)
+        function checkGuestAccess(nextLevelEl) {
+            if (isGuest()) {
+                nextLevelEl.classList.add("locked");
+                nextLevelEl.onclick = () => {
+                    const confirmSignup = confirm(
+                        "🔒 Trial Complete!\n\nGuest Mode only allows the first level.\n\nWould you like to sign up to unlock the full adventure?"
+                    );
+                    if (confirmSignup) {
+                        location.href = "../../auth/signup.html";
+                    }
                 };
+                return true;
             }
+            return false;
+        }
 
-            function lock(el) {
-                el.classList.add("locked");
-                el.onclick = () => {
-                    alert("🔒 Complete the previous level first!");
-                };
+        // Unlock flow
+        if (s1Done) {
+            if (!checkGuestAccess(lvl2)) {
+                unlockWithAnim(lvl2);
             }
+        } else {
+            lock(lvl2);
+        }
 
-            function markCompleted(el) {
-                el.classList.add("completed");
-                el.classList.remove("current");
-            }
+        if (s2Done && !isGuest()) unlockWithAnim(lvl3); else lock(lvl3);
+        if (s3Done && !isGuest()) unlockWithAnim(lvl4); else lock(lvl4);
+        if (s4Done && !isGuest()) unlockWithAnim(lvl5); else lock(lvl5);
 
-            function unlockWithAnim(el) {
-                el.classList.remove("locked");
-                el.classList.add("unlocking");
-                setTimeout(() => el.classList.remove("unlocking"), 700);
-                makeClickable(el);
-            }
+        // Current level
+        function setCurrentLevel() {
+            [lvl1, lvl2, lvl3, lvl4, lvl5].forEach(el => {
+                if (el) el.classList.remove("current");
+            });
 
-            function setCurrent(el) {
-                el.classList.add("current");
-                el.classList.remove("locked");
-            }
+            if (!s1Done) return setCurrent(lvl1);
+            if (!s2Done) return setCurrent(lvl2);
+            if (!s3Done) return setCurrent(lvl3);
+            if (!s4Done) return setCurrent(lvl4);
+            if (!s5Done) return setCurrent(lvl5);
 
-            // Level 1 always open
-            makeClickable(lvl1);
+            const banner = document.getElementById("allCompleteBanner");
+            if (banner) banner.style.display = "block";
+        }
 
-            // Mark completed
-            if (s1Done) markCompleted(lvl1);
-            if (s2Done) markCompleted(lvl2);
-            if (s3Done) markCompleted(lvl3);
-            if (s4Done) markCompleted(lvl4);
-            if (s5Done) markCompleted(lvl5);
-
-            // 🔥 SAME LOGIC AS PYTHON MAP
-            function checkGuestAccess(nextLevelEl) {
-                if (isGuest) {
-                    nextLevelEl.classList.add("locked");
-                    nextLevelEl.onclick = () => {
-                        const confirmSignup = confirm(
-                            "🔒 Trial Complete!\n\nGuest Mode only allows Level 1.\n\nSign up to unlock all levels?"
-                        );
-                        if (confirmSignup) {
-                            location.href = "../../auth/signup.html";
-                        }
-                    };
-                    return true;
-                }
-                return false;
-            }
-
-            // Unlock flow
-            if (s1Done) {
-                if (!checkGuestAccess(lvl2)) {
-                    unlockWithAnim(lvl2);
-                }
-            } else {
-                lock(lvl2);
-            }
-
-            if (s2Done && !isGuest) unlockWithAnim(lvl3); else lock(lvl3);
-            if (s3Done && !isGuest) unlockWithAnim(lvl4); else lock(lvl4);
-            if (s4Done && !isGuest) unlockWithAnim(lvl5); else lock(lvl5);
-
-            // Current level
-            function setCurrentLevel() {
-                [lvl1, lvl2, lvl3, lvl4, lvl5].forEach(el => el.classList.remove("current"));
-
-                if (!s1Done) return setCurrent(lvl1);
-                if (!s2Done) return setCurrent(lvl2);
-                if (!s3Done) return setCurrent(lvl3);
-                if (!s4Done) return setCurrent(lvl4);
-                if (!s5Done) return setCurrent(lvl5);
-
-                document.getElementById("allCompleteBanner").style.display = "block";
-            }
-
-            setCurrentLevel();
-        });
+        setCurrentLevel();
     </script>
 
 </body>
