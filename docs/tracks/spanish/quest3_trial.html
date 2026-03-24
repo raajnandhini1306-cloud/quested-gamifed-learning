@@ -19,19 +19,55 @@
 
         .word {
             font-size: 42px;
-            font-weight: bold;
+            font-weight: 900;
             color: #f1c40f;
             margin-bottom: 10px;
         }
 
         .meaning {
             font-size: 20px;
-            margin-bottom: 20px;
+            color: #f4eac8;
+            margin-bottom: 28px;
+            opacity: 0.85;
+            font-weight: 700;
+        }
+
+
+
+        .btn-la {
+            background: #e74c3c;
+            color: white;
         }
 
         #feedback {
-            margin-top: 15px;
-            font-weight: bold;
+            margin-top: 18px;
+            font-size: 20px;
+            font-weight: 900;
+            text-align: center;
+        }
+
+        .shake {
+            animation: shake 0.25s linear;
+        }
+
+        @keyframes shake {
+
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+
+            25% {
+                transform: translateX(-6px);
+            }
+
+            50% {
+                transform: translateX(6px);
+            }
+
+            75% {
+                transform: translateX(-4px);
+            }
         }
     </style>
 </head>
