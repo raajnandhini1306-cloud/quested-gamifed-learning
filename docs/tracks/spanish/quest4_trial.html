@@ -8,8 +8,17 @@
     <link rel="stylesheet" href="../../css/quest-style.css">
 
     <style>
+        body {
+            font-family: "Segoe UI", sans-serif;
+        }
+
         .parchment {
             padding: 25px;
+        }
+
+        h2 {
+            margin-bottom: 10px;
+            text-align: center;
         }
 
         .storybook-box {
@@ -17,9 +26,12 @@
             border: 2px solid #c8b07a;
             padding: 18px;
             border-radius: 14px;
+            width: min(600px, 95vw);
             margin: auto;
+            line-height: 1.55;
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.15);
             text-align: center;
-            font-weight: bold;
+            font-weight: 700;
         }
 
         .table-block {
@@ -33,24 +45,65 @@
         .row {
             display: flex;
             justify-content: space-between;
-            padding: 6px;
+            padding: 8px 12px;
+            border-bottom: 1px solid #e7d9b7;
+            font-weight: 700;
+        }
+
+        .row:last-child {
+            border-bottom: none;
+        }
+
+        .question-box {
+            margin-top: 18px;
+            background: #fff5da;
+            border: 2px solid #c8b07a;
+            padding: 16px;
+            border-radius: 12px;
+            line-height: 1.6;
+            font-weight: 700;
+            text-align: center;
+            display: none;
+        }
+
+        .crystal-container {
+            margin-top: 20px;
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+            justify-content: center;
+            display: none;
         }
 
         .crystal {
-            padding: 12px;
-            margin: 5px;
+            width: 120px;
+            padding: 14px;
             background: #d9c7a7;
-            border-radius: 10px;
+            border-radius: 12px;
             cursor: pointer;
-            display: inline-block;
+            text-align: center;
+            font-size: 18px;
+            font-weight: 900;
+            transition: transform 0.15s ease;
         }
 
-        .correct {
-            background: lightgreen;
+        .crystal:hover {
+            transform: scale(1.05);
         }
 
-        .wrong {
-            background: lightcoral;
+        .crystal.correct {
+            background: #8fe388;
+            border: 2px solid #3b7a31;
+        }
+
+        .crystal.wrong {
+            background: #ffb5b5;
+            border: 2px solid #b43636;
+        }
+        #feedback {
+            margin-top: 16px;
+            font-weight: 900;
+            text-align: center;
         }
     </style>
 </head>
