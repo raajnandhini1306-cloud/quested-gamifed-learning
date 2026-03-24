@@ -2,7 +2,7 @@ function showMsg(text, ok = true) {
     const box = document.getElementById("msg");
     if (!box) return;
 
-    box.className = "msg " + (ok ? "ok": "err");
+    box.className = "msg " + (ok ? "ok" : "err");
     box.style.display = "block";
     box.innerText = text;
 }
@@ -26,7 +26,7 @@ async function login(e) {
     try {
 
         const res = await fetch(
-            "https://quested-backend.onrender.com/login",
+            "https://quested-backend-production.up.railway.app/login",
             {
                 method: "POST",
                 headers: {
@@ -54,7 +54,7 @@ async function login(e) {
 
         } else {
 
-            showMsg(data.message || "Invalid login", false);
+            showMsg("Invalid login", false);
 
         }
 
@@ -65,6 +65,7 @@ async function login(e) {
 
     }
 }
+
 
 // =====================
 // SIGNUP
@@ -86,7 +87,7 @@ async function signup(e) {
     try {
 
         const res = await fetch(
-            "https://quested-backend.onrender.com/signup",
+            "https://quested-backend-production.up.railway.app/signup",
             {
                 method: "POST",
                 headers: {
@@ -115,7 +116,7 @@ async function signup(e) {
 
         } else {
 
-            showMsg(data.message, false);
+            showMsg("Signup failed", false);
 
         }
 
@@ -126,6 +127,8 @@ async function signup(e) {
 
     }
 }
+
+
 // =====================
 // GUEST
 // =====================
@@ -135,11 +138,7 @@ function startGuestSession(path) {
     localStorage.setItem("isLoggedIn", "guest");
     localStorage.setItem("playerName", "Guest Adventurer");
 
-    showMsg("Starting guest session...", true);
-
-    setTimeout(() => {
-        location.href = path;
-    }, 500);
+    location.href = path;
 }
 
 
@@ -166,40 +165,4 @@ function logout(loginPath = "../auth/login.html") {
     localStorage.removeItem("isLoggedIn");
 
     location.href = loginPath;
-}
-
-
-// =====================
-// CLEAR FORM
-// =====================
-
-function clearForm() {
-
-    const ids = ["name", "email", "pass", "confirm"];
-
-    ids.forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.value = "";
-    });
-
-    const msg = document.getElementById("msg");
-    if (msg) msg.style.display = "none";
-}
-
-
-// =====================
-// FORGOT PASSWORD
-// =====================
-
-function forgotPassword() {
-
-    const email = prompt("Enter your email:");
-
-    if (!email) return;
-
-    if (email.includes("@")) {
-        alert("Reset link sent to " + email);
-    } else {
-        alert("Invalid email");
-    }
 }
