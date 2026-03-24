@@ -66,26 +66,27 @@ async function login(e) {
     }
 }
 
-
 // =====================
 // SIGNUP
 // =====================
-async function login(e) {
+async function signup(e) {
 
     e.preventDefault();
 
+    const name = document.getElementById("name").value.trim();
     const email = document.getElementById("email").value.trim();
-    const pass = document.getElementById("pass").value.trim();
+    const pass = document.getElementById("pass").value;
+    const confirm = document.getElementById("confirm").value;
 
-    if (!email || !pass) {
-        showMsg("Enter email and password", false);
+    if (pass !== confirm) {
+        showMsg("Passwords do not match", false);
         return;
     }
 
     try {
 
         const res = await fetch(
-            "https://quested-backend.onrender.com/login",
+            "https://quested-backend.onrender.com/signup",
             {
                 method: "POST",
                 headers: {
@@ -102,25 +103,26 @@ async function login(e) {
 
         if (data.success) {
 
+            showMsg("Signup successful", true);
+
             localStorage.setItem("isLoggedIn", "1");
+            localStorage.setItem("playerName", name);
             localStorage.setItem("userEmail", email);
 
-            showMsg("Login successful", true);
-
             setTimeout(() => {
-                location.href = "../hub/skillselection.html";
-            }, 500);
+                location.href = "../hub/avatar-selection.html";
+            }, 600);
 
         } else {
 
-            showMsg(data.message || "Invalid login", false);
+            showMsg(data.message, false);
 
         }
 
     } catch (err) {
 
         console.log(err);
-        showMsg("Server not reachable", false);
+        showMsg("Server error", false);
 
     }
 }
