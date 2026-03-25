@@ -77,17 +77,91 @@
     <script src="../../js/auth.js"></script>
     <script>
         console.log("📍 Python Level Page Loaded");
+        async function loadProgressFromServer() {
 
+            const email = localStorage.getItem("userEmail");
+
+            if (!email) return;
+
+            try {
+
+                const res = await fetch(
+                    "https://quested-backend-production.up.railway.app/progress/" + email
+                );
+
+                const data = await res.json();
+
+                if (!data.success) return;
+
+                const p = data.progress;
+
+                if (p["Python-quest1"]) localStorage.setItem("q1Complete", "1");
+                if (p["Python-quest2"]) localStorage.setItem("q2Complete", "1");
+                if (p["Python-quest3"]) localStorage.setItem("q3Complete", "1");
+                if (p["Python-quest4"]) localStorage.setItem("q4Complete", "1");
+                if (p["Python-quest5"]) localStorage.setItem("q5Complete", "1");
+
+            } catch (err) {
+
+                console.log("Failed to load progress");
+
+            }
+
+        }
         checkAuth('../../auth/login.html');
 
+        (async () => {
 
-        const q1Done = localStorage.getItem("q1Complete") === "1";
+            await loadProgressFromServer();
 
-        const q2Done = localStorage.getItem("q2Complete") === "1";
-        const q3Done = localStorage.getItem("q3Complete") === "1";
-        const q4Done = localStorage.getItem("q4Complete") === "1";
-        const q5Done = localStorage.getItem("q5Complete") === "1";
+            initMap();
 
+        })();
+        function initMap() {
+
+    const q1Done = localStorage.getItem("q1Complete") === "1";
+    const q2Done = localStorage.getItem("q2Complete") === "1";
+    const q3Done = localStorage.getItem("q3Complete") === "1";
+    const q4Done = localStorage.getItem("q4Complete") === "1";
+    const q5Done = localStorage.getItem("q5Complete") === "1";
+
+    makeClickable(lvl1);
+
+    if (q1Done) markCompleted(lvl1);
+    if (q2Done) markCompleted(lvl2);
+    if (q3Done) markCompleted(lvl3);
+    if (q4Done) markCompleted(lvl4);
+    if (q5Done) markCompleted(lvl5);
+
+    if (q1Done) {
+        if (!checkGuestAccess(lvl2)) unlockWithAnim(lvl2);
+    } else {
+        lock(lvl2);
+    }
+
+    if (q2Done && !isGuest()) unlockWithAnim(lvl3); else lock(lvl3);
+    if (q3Done && !isGuest()) unlockWithAnim(lvl4); else lock(lvl4);
+    if (q4Done && !isGuest()) unlockWithAnim(lvl5); else lock(lvl5);
+
+
+    function setCurrentLevel() {
+
+        [lvl1, lvl2, lvl3, lvl4, lvl5].forEach(el => {
+            if (el) el.classList.remove("current");
+        });
+
+        if (!q1Done) return setCurrent(lvl1);
+        if (!q2Done) return setCurrent(lvl2);
+        if (!q3Done) return setCurrent(lvl3);
+        if (!q4Done) return setCurrent(lvl4);
+        if (!q5Done) return setCurrent(lvl5);
+
+        const banner = document.getElementById("allCompleteBanner");
+        if (banner) banner.style.display = "block";
+    }
+
+    setCurrentLevel();
+}
         function makeClickable(el) {
             if (!el) return;
             el.classList.remove("locked");
@@ -120,26 +194,16 @@
         }
 
         function setCurrent(el) {
-            if (!el) return;
-            el.classList.add("current");
-            el.classList.remove("locked");
-        }
+    if (!el) return;
+    el.classList.add("current");
+    el.classList.remove("locked");
+}
 
         const lvl1 = document.getElementById("lvl1");
         const lvl2 = document.getElementById("lvl2");
         const lvl3 = document.getElementById("lvl3");
         const lvl4 = document.getElementById("lvl4");
         const lvl5 = document.getElementById("lvl5");
-
-        // Level 1 always clickable
-        makeClickable(lvl1);
-
-        // Completed styling
-        if (q1Done) markCompleted(lvl1);
-        if (q2Done) markCompleted(lvl2);
-        if (q3Done) markCompleted(lvl3);
-        if (q4Done) markCompleted(lvl4);
-        if (q5Done) markCompleted(lvl5);
 
 
         // Guest mode check
@@ -157,41 +221,7 @@
             }
             return false;
         }
-
-        //  Unlock order logic with Guest Check:
-        if (q1Done) {
-            if (!checkGuestAccess(lvl2)) {
-                unlockWithAnim(lvl2);
-            }
-        } else {
-            lock(lvl2);
-        }
-
-        // For higher levels, guests are blocked implicitly because they can't pass lvl 1 limit, 
-        // but just in case they hacked q1Done:
-        if (q2Done && !isGuest()) unlockWithAnim(lvl3); else lock(lvl3);
-        if (q3Done && !isGuest()) unlockWithAnim(lvl4); else lock(lvl4);
-        if (q4Done && !isGuest()) unlockWithAnim(lvl5); else lock(lvl5);
-
-
-        // Set CURRENT level as first incomplete
-        function setCurrentLevel() {
-            [lvl1, lvl2, lvl3, lvl4, lvl5].forEach(el => {
-                if (el) el.classList.remove("current");
-            });
-
-            if (!q1Done) return setCurrent(lvl1);
-            if (!q2Done) return setCurrent(lvl2);
-            if (!q3Done) return setCurrent(lvl3);
-            if (!q4Done) return setCurrent(lvl4);
-            if (!q5Done) return setCurrent(lvl5);
-
-            // all complete
-            const banner = document.getElementById("allCompleteBanner");
-            if (banner) banner.style.display = "block";
-        }
-
-        setCurrentLevel();
+        
     </script>
 
 </body>
