@@ -203,7 +203,36 @@
         let qIndex = 0;
         let bossHP = 100;
         let playerHP = 100;
+        async function saveProgress(questName) {
 
+    const email = localStorage.getItem("userEmail");
+
+    if (!email) return;
+
+    try {
+
+        await fetch(
+            "https://quested-backend-production.up.railway.app/progress",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    email: email,
+                    quest: questName
+                })
+            }
+        );
+
+        console.log("Progress saved");
+
+    } catch (err) {
+
+        console.log("Progress save failed");
+
+    }
+}
         const bossFill = document.getElementById("boss-fill");
         const playerFill = document.getElementById("player-fill");
         const bossHpText = document.getElementById("bossHpText");
