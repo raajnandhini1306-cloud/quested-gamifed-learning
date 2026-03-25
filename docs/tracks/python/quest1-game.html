@@ -293,25 +293,28 @@
         async function saveProgress(questName) {
 
             const email = localStorage.getItem("userEmail");
-
             if (!email) return;
-
             try {
-                await fetch("http://localhost:5000/progress", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({
-                        email: email,
-                        quest: questName
-                    })
-                });
+                await fetch(
+                    "https://quested-backend-production.up.railway.app/progress",
+                    {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            email: email,
+                            quest: questName
+                        })
+                    }
+                );
 
                 console.log("Progress saved");
 
             } catch (err) {
+
                 console.log("Progress save failed");
+
             }
         }
         function completeQuest() {
