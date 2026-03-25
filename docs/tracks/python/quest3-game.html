@@ -243,7 +243,36 @@
         const nextExerciseBtn = document.getElementById("nextExerciseBtn");
 
         let domBeltItems = [];
+        async function saveProgress(questName) {
 
+    const email = localStorage.getItem("userEmail");
+
+    if (!email) return;
+
+            try {
+
+                await fetch(
+                    "https://quested-backend-production.up.railway.app/progress",
+                    {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            email: email,
+                            quest: questName
+                        })
+                    }
+                );
+
+                console.log("Progress saved");
+
+            } catch (err) {
+
+                console.log("Progress save failed");
+
+            }
+        }
         function pauseBelt(ms = 650) {
             belt.classList.add("paused");
             setTimeout(() => belt.classList.remove("paused"), ms);
@@ -373,17 +402,12 @@
             if (exerciseIndex < EXERCISES.length - 1) {
                 nextExerciseBtn.style.display = "inline-block";
             } else {
-                // last exercise complete => quest complete
                 localStorage.setItem("q3Complete", "1");
-<<<<<<< HEAD:docs/tracks/python/quest3-game.html
-                feedback.innerText = "ðŸ† Level 3 Complete! Returning to map...";
-=======
-
                 saveProgress("Python-quest3");
-
                 feedback.innerText = "🏆 Level 3 Complete! Returning to map...";
->>>>>>> b59e43b (Backend Commit - QuestED gamified learning platform):docs/quest3-game.html
-                setTimeout(() => location.href = "python-level.html", 1500);
+                setTimeout(() => {
+                    location.href = "python-level.html";
+                }, 1500);
             }
         }
 
